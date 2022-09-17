@@ -1,7 +1,18 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
+import {
+  IonContent,
+  IonHeader,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+} from "@ionic/react";
+import { Redirect } from "react-router";
+import ExploreContainer from "../components/ExploreContainer";
 
 export default function SearchPage() {
+  const userId = localStorage.getItem("user");
+  if (!userId) {
+    return <Redirect to="/login" />;
+  }
   return (
     <IonPage>
       <IonHeader>
@@ -19,5 +30,4 @@ export default function SearchPage() {
       </IonContent>
     </IonPage>
   );
-};
-
+}
