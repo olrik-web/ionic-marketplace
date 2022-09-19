@@ -1,7 +1,28 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
+import {
+  IonContent,
+  IonHeader,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+  useIonViewWillEnter,
+} from "@ionic/react";
+import { Redirect } from "react-router";
+import ExploreContainer from "../components/ExploreContainer";
+import { showTabBar } from "../util/tabbar";
 
 export default function HomePage() {
+  const userId = localStorage.getItem("user");
+
+  useIonViewWillEnter(() => {
+    showTabBar();
+  });
+
+  
+
+  if (!userId) {
+    return <Redirect to="/login" />;
+  }
+
   return (
     <IonPage>
       <IonHeader>
@@ -19,4 +40,4 @@ export default function HomePage() {
       </IonContent>
     </IonPage>
   );
-};
+}
