@@ -68,7 +68,7 @@ export default function SignUpForm({ handleSubmit }) {
     const regex = RegExp(
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i
     );
-    if (typeof email === "string" && email.length === 0) {
+    if(email.length === 0) {
       setEmailError("Email is required");
       validationSuccess = false;
     } else if (regex.test(email) === false) {
@@ -77,7 +77,7 @@ export default function SignUpForm({ handleSubmit }) {
       setEmailError("");
     }
     // Password validation
-    if (typeof password === "string" && password.length < 6) {
+    if (password.length < 6) {
       setPasswordError("Password must be at least 6 characters");
       validationSuccess = false;
     } else {
@@ -90,19 +90,19 @@ export default function SignUpForm({ handleSubmit }) {
       setRepeatPasswordError("");
     }
     // Name validation
-    if (typeof firstName === "string" && firstName.length === 0) {
+    if (firstName.length === 0) {
       setFirstNameError("First name is required");
       validationSuccess = false;
     } else {
       setFirstNameError("");
     }
-    if (typeof lastName === "string" && lastName.length === 0) {
+    if (lastName.length === 0) {
       setLastNameError("Last name is required");
       validationSuccess = false;
     } else {
       setLastNameError("");
     }
-    if (typeof userType === "string" && userType.length === 0) {
+    if (userType.length === 0) {
       setUserTypeError("User type is required");
       validationSuccess = false;
     } else {
