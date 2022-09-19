@@ -10,6 +10,7 @@ import { Redirect, useHistory } from "react-router";
 import LoginForm from "../components/LogInForm";
 import { hideTabBar } from "../util/tabbar";
 import { validateUser } from "../util/user.server";
+import { Toast } from "@capacitor/toast";
 
 export default function LogInPage() {
   let history = useHistory();
@@ -28,13 +29,18 @@ export default function LogInPage() {
     if (result.status === 200) {
       // TODO: Show a toast or something??
       history.push("/home");
-      // await Toast.show({
-      //   text: result.message,
-      //   position: "center",
-      //   duration: "long",
-      // });
+      await Toast.show({
+        text: result.message,
+        position: "center",
+        duration: "long",
+      });
     } else {
       // TODO: Show a toast or something??
+      await Toast.show({
+        text: result.message,
+        position: "center",
+        duration: "long",
+      });
     }
   }
 
