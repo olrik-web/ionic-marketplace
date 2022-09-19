@@ -55,14 +55,14 @@ export async function validateUser(user) {
       // Password correct. Setting local storage
       localStorage.setItem("user", JSON.stringify(userData.id));
       result = {
-        message: "Login success.",
+        message: "Logged in successfully.",
         fields: userData,
         status: 200,
       };
     } else {
       // Password incorrect
       result = {
-        message: "Login failed. Check email and password",
+        message: "Login failed. Please check email and password.",
         fields: userData,
         status: 400,
       };
@@ -71,7 +71,7 @@ export async function validateUser(user) {
     // Response was bad.
     console.log(e);
     result = {
-      message: "Something went wrong trying to login.",
+      message: "User was not found. Please verify your email.",
       fields: { user },
       status: 400,
     };

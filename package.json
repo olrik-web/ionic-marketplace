@@ -5,6 +5,7 @@
   "dependencies": {
     "@capacitor/app": "4.0.1",
     "@capacitor/core": "4.2.0",
+    "@capacitor/dialog": "^4.0.1",
     "@capacitor/geolocation": "^4.0.1",
     "@capacitor/haptics": "4.0.1",
     "@capacitor/keyboard": "4.0.1",
