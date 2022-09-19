@@ -21,13 +21,13 @@ export default function LogInPage() {
   });
 
   async function handleSubmit(user) {
+    //TODO: Show loader
     // present();
 
     const result = await validateUser(user);
     console.log(result);
 
     if (result.status === 200) {
-      // TODO: Show a toast or something??
       history.push("/home");
       await Toast.show({
         text: result.message,
@@ -35,13 +35,14 @@ export default function LogInPage() {
         duration: "long",
       });
     } else {
-      // TODO: Show a toast or something??
       await Toast.show({
         text: result.message,
         position: "center",
         duration: "long",
       });
     }
+    //TODO: Hide loader
+    // dismiss();
   }
 
   // Redirect to home if we're already logged in

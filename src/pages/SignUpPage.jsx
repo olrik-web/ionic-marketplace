@@ -8,32 +8,36 @@ import {
 import { Redirect, useHistory } from "react-router";
 import SignUpForm from "../components/SignUpForm";
 import { createUser } from "../util/user.server";
+import { Toast } from "@capacitor/toast";
 
 export default function SignUpPage() {
   let history = useHistory();
   const userId = localStorage.getItem("user");
 
   async function handleSubmit(newUser) {
+    //TODO: Show loader
     // present();
 
     // Creating the user with the form data as parameter
     const result = await createUser(newUser);
     console.log(result);
 
-    // dismiss();
-
     if (result.status === 200) {
-      // TODO: User was created. Show a toast, redirect to login or something
       history.push("/login");
-      // await Toast.show({
-      //   text: result.message,
-      //   position: "center",
-      //   duration: "long",
-      // });
+      await Toast.show({
+        text: result.message,
+        position: "center",
+        duration: "long",
+      });
     } else {
-      // TODO: User was NOT created. Show a toast or something
-      
+      await Toast.show({
+        text: result.message,
+        position: "center",
+        duration: "long",
+      });
     }
+    //TODO: Hide loader
+    // dismiss();
   }
 
   // Redirect to home if we're already logged in
