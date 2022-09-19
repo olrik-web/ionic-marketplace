@@ -5,12 +5,13 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useHistory } from "react-router";
+import { Redirect, useHistory } from "react-router";
 import SignUpForm from "../components/SignUpForm";
 import { createUser } from "../util/user.server";
 
 export default function SignUpPage() {
   let history = useHistory();
+  const userId = localStorage.getItem("user");
 
   async function handleSubmit(newUser) {
     // present();
@@ -32,6 +33,11 @@ export default function SignUpPage() {
     } else {
       // TODO: User was NOT created. Show a toast or something
     }
+  }
+
+  // Redirect to home if we're already logged in
+  if (userId) {
+    return <Redirect to="/home" />;
   }
 
   return (

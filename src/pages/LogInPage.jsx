@@ -6,13 +6,14 @@ import {
   IonToolbar,
   useIonViewWillEnter,
 } from "@ionic/react";
-import { useHistory } from "react-router";
+import { Redirect, useHistory } from "react-router";
 import LoginForm from "../components/LogInForm";
 import { hideTabBar } from "../util/tabbar";
 import { validateUser } from "../util/user.server";
 
 export default function LogInPage() {
   let history = useHistory();
+  const userId = localStorage.getItem("user");
 
   useIonViewWillEnter(() => {
     hideTabBar();
@@ -37,7 +38,10 @@ export default function LogInPage() {
     }
   }
 
-  
+  // Redirect to home if we're already logged in
+  if (userId) {
+    return <Redirect to="/home" />;
+  }
 
   return (
     <IonPage>
