@@ -50,6 +50,8 @@ export default function SignUpForm({ handleSubmit }) {
         firstName: firstName,
         lastName: lastName,
         userType: userType,
+        image:
+          "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
         location: {
           latitude: latitude,
           longitude: longitude,

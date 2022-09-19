@@ -10,7 +10,7 @@ import {
   setupIonicReact,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { home, searchOutline, person } from "ionicons/icons";
+import { home, searchOutline, person, chatbox } from "ionicons/icons";
 import HomePage from "./pages/HomePage";
 import SearchPage from "./pages/SearchPage";
 import ProfilePage from "./pages/Profile";
@@ -36,6 +36,8 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 import "./theme/app.css";
+import ChatsPage from "./pages/ChatsPage";
+import UserChatPage from "./pages/UserChatPage";
 
 setupIonicReact();
 
@@ -53,6 +55,12 @@ const App: React.FC = () => {
             <Route exact path="/search">
               <SearchPage />
             </Route>
+            <Route exact path="/chats">
+              <ChatsPage />
+            </Route>
+            <Route path="/chats/:id">
+              <UserChatPage />
+            </Route>
             <Route exact path="/profile">
               <ProfilePage />
             </Route>
@@ -62,6 +70,7 @@ const App: React.FC = () => {
             <Route exact path="/signup">
               <SignUpPage />
             </Route>
+
             <Route exact path="/">
               {userId ? <Redirect to="/home" /> : <Redirect to="/login" />}
             </Route>
@@ -70,6 +79,10 @@ const App: React.FC = () => {
             <IonTabButton tab="home" href="/home">
               <IonIcon icon={home} />
               <IonLabel>Home</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="chats" href="/chats">
+              <IonIcon icon={chatbox} />
+              <IonLabel>Chats</IonLabel>
             </IonTabButton>
             <IonTabButton tab="search" href="/search">
               <IonIcon icon={searchOutline} />

@@ -32,7 +32,7 @@ export default function LogInPage() {
       await Toast.show({
         text: result.message,
         position: "center",
-        duration: "long",
+        duration: "short",
       });
     } else {
       await Toast.show({
