@@ -8,6 +8,7 @@ import {
 } from "@ionic/react";
 import { useHistory } from "react-router";
 import LoginForm from "../components/LogInForm";
+import { hideTabBar } from "../util/tabbar";
 import { validateUser } from "../util/user.server";
 
 export default function LogInPage() {
@@ -36,12 +37,7 @@ export default function LogInPage() {
     }
   }
 
-  function hideTabBar() {
-    const tabBar = document.getElementById("app-tab-bar");
-    if (tabBar !== null) {
-      tabBar.style.display = "none";
-    }
-  }
+  
 
   return (
     <IonPage>

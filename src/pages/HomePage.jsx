@@ -8,6 +8,7 @@ import {
 } from "@ionic/react";
 import { Redirect } from "react-router";
 import ExploreContainer from "../components/ExploreContainer";
+import { showTabBar } from "../util/tabbar";
 
 export default function HomePage() {
   const userId = localStorage.getItem("user");
@@ -16,12 +17,7 @@ export default function HomePage() {
     showTabBar();
   });
 
-  function showTabBar() {
-    const tabBar = document.getElementById("app-tab-bar");
-    if (tabBar !== null) {
-      tabBar.style.display = "flex";
-    }
-  }
+  
 
   if (!userId) {
     return <Redirect to="/login" />;
