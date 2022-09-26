@@ -1,25 +1,27 @@
-import bcrypt from "bcryptjs";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore";
+import { auth, db } from "./firebase";
 
-const URL =
-  "https://ionic-marketplace-adde9-default-rtdb.europe-west1.firebasedatabase.app/";
+const COLLECTION_USERS = "users";
 
 export async function createUser(newUser) {
   let result;
   try {
-    // Hashing the password using salt
-    const salt = bcrypt.genSaltSync(10);
-    newUser.password = bcrypt.hashSync(newUser.password, salt);
+    // Create user in Firebase Authentication
+    const response = await createUserWithEmailAndPassword(auth, newUser.email, newUser.password);
 
-    // Attempting to create a user.
-    const response = await fetch(URL + "users.json", {
-      method: "POST",
-      body: JSON.stringify(newUser),
+    // Save user to Firebase Cloud Firestore in the users collection.
+    await setDoc(doc(db, COLLECTION_USERS, response.user.uid), {
+      uid: response.user.uid,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      email: newUser.email,
+      createdAt: Timestamp.fromDate(new Date()),
     });
 
     // Response is good.
     result = {
       message: "Account was created succesfully.",
-      fields: await response.json(),
       status: 200,
     };
   } catch (e) {
@@ -27,58 +29,77 @@ export async function createUser(newUser) {
     console.log(e);
     result = {
       message: "Something went wrong trying to create a new user.",
-      fields: { newUser },
       status: 400,
     };
   }
   return result;
 }
 
-export async function validateUser(user) {
+export async function signIn(user) {
   let result;
   try {
-    // Getting all users.
-    const response = await fetch(URL + "users.json");
-    const data = await response.json();
+    // TODO: Implement other means of sign in? E.g. google, github and such
+    const response = await signInWithEmailAndPassword(auth, user.email, user.password);
 
-    // from object to array
-    const postsArray = Object.keys(data).map((key) => ({
-      id: key,
-      ...data[key],
-    }));
-    // Finding the specific user trying to log in
-    const userData = postsArray.find((u) => u.email === user.email);
+    // Update status of user so the user appears online when logged in.
+    await updateDoc(doc(db, COLLECTION_USERS, response.user.uid), {
+      isOnline: true,
+    });
 
-    // Checking if password is correct
-    const userValidated = bcrypt.compareSync(user.password, userData.password);
-    if (userValidated) {
-      // Password correct. Setting local storage
-      localStorage.setItem("user", JSON.stringify(userData.id));
-      result = {
-        message: "Logged in successfully.",
-        fields: userData,
-        status: 200,
-      };
-    } else {
-      // Password incorrect
-      result = {
-        message: "Login failed. Please check email and password.",
-        fields: userData,
-        status: 400,
-      };
-    }
+    // Response is good.
+    result = {
+      message: "Sign in success.",
+      status: 200,
+    };
   } catch (e) {
     // Response was bad.
     console.log(e);
     result = {
-      message: "User was not found. Please verify your email.",
-      fields: { user },
+      message: "Something went wrong trying to sign in.",
       status: 400,
     };
   }
   return result;
 }
 
-export async function signOut() {
-    localStorage.clear();
+/*
+ * In this function we sign out the user. We update the lastOnline and isOnline field
+ * and call the Firebase Authentication signOut function
+ */
+export async function signOutUser() {
+  await updateDoc(doc(db, COLLECTION_USERS, auth.currentUser.uid), {
+    lastOnline: Timestamp.fromDate(new Date()),
+    isOnline: false,
+  });
+  await signOut(auth);
+}
+
+/*
+ * In this function we just update the user status to appear online
+ */
+export async function updateUserStatus() {
+  await updateDoc(doc(db, COLLECTION_USERS, auth.currentUser.uid), {
+    isOnline: true,
+  });
+}
+
+/*
+ * In this function we get a user using an id. It can be the currently logged in user
+ * or a different user.
+ */
+export async function getUser(uid) {
+  const docRef = doc(db, COLLECTION_USERS, uid);
+
+  try {
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return { data: docSnap.data(), status: 200 };
+    } else {
+      console.log("Document does not exist");
+      return { status: 400 };
+    }
+  } catch (error) {
+    console.log(error);
+    return { status: 400 };
+  }
 }

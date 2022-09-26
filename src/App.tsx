@@ -10,12 +10,15 @@ import {
   setupIonicReact,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { home, searchOutline, person } from "ionicons/icons";
+import { home, searchOutline, person, chatbox } from "ionicons/icons";
 import HomePage from "./pages/HomePage";
 import SearchPage from "./pages/SearchPage";
 import ProfilePage from "./pages/Profile";
 import LoginPage from "./pages/LogInPage";
 import SignUpPage from "./pages/SignUpPage";
+import ChatsPage from "./pages/ChatsPage";
+import UserChatPage from "./pages/UserChatPage";
+import { AuthContext } from "./context/auth";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -36,11 +39,18 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 import "./theme/app.css";
+import { useContext } from "react";
+import { signOutUser } from "./util/user.server";
 
 setupIonicReact();
 
 const App: React.FC = () => {
-  const userId = localStorage.getItem("user");
+  const { user } = useContext(AuthContext);
+
+  // We call the sign out user function when the user closes the application, so the user is set to offline
+  window.addEventListener("beforeunload", () => {
+    signOutUser();
+  });
 
   return (
     <IonApp>
@@ -53,6 +63,12 @@ const App: React.FC = () => {
             <Route exact path="/search">
               <SearchPage />
             </Route>
+            <Route exact path="/chats">
+              <ChatsPage />
+            </Route>
+            <Route path="/chats/:id">
+              <UserChatPage />
+            </Route>
             <Route exact path="/profile">
               <ProfilePage />
             </Route>
@@ -62,14 +78,19 @@ const App: React.FC = () => {
             <Route exact path="/signup">
               <SignUpPage />
             </Route>
+            {/* If the user is already logged in we redirect them to home page, otherwise go to login page */}
             <Route exact path="/">
-              {userId ? <Redirect to="/home" /> : <Redirect to="/login" />}
+              {user ? <Redirect to="/home" /> : <Redirect to="/login" />}
             </Route>
           </IonRouterOutlet>
           <IonTabBar id="app-tab-bar" slot="bottom">
             <IonTabButton tab="home" href="/home">
               <IonIcon icon={home} />
               <IonLabel>Home</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="chats" href="/chats">
+              <IonIcon icon={chatbox} />
+              <IonLabel>Chats</IonLabel>
             </IonTabButton>
             <IonTabButton tab="search" href="/search">
               <IonIcon icon={searchOutline} />

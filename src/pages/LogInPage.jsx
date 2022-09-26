@@ -8,15 +8,18 @@ import {
 } from "@ionic/react";
 import { Redirect, useHistory } from "react-router";
 import LoginForm from "../components/LogInForm";
-import { hideTabBar } from "../util/tabbar";
-import { validateUser } from "../util/user.server";
+import { signIn } from "../util/user.server";
 import { Toast } from "@capacitor/toast";
+import { useContext } from "react";
+import { AuthContext } from "../context/auth";
+import { hideTabBar } from "../util/helperMethods";
 
 export default function LogInPage() {
   let history = useHistory();
-  const userId = localStorage.getItem("user");
+  const { user } = useContext(AuthContext);
 
   useIonViewWillEnter(() => {
+    // Hide the tabbar on login page
     hideTabBar();
   });
 
@@ -24,21 +27,20 @@ export default function LogInPage() {
     //TODO: Show loader
     // present();
 
-    const result = await validateUser(user);
-    console.log(result);
+    const result = await signIn(user);
 
     if (result.status === 200) {
       history.push("/home");
       await Toast.show({
         text: result.message,
         position: "center",
-        duration: "long",
+        duration: "short",
       });
     } else {
       await Toast.show({
         text: result.message,
         position: "center",
-        duration: "long",
+        duration: "short",
       });
     }
     //TODO: Hide loader
@@ -46,7 +48,7 @@ export default function LogInPage() {
   }
 
   // Redirect to home if we're already logged in
-  if (userId) {
+  if (user) {
     return <Redirect to="/home" />;
   }
 
