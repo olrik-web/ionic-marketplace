@@ -3,6 +3,12 @@ import { useContext } from "react";
 import { Redirect } from "react-router";
 import ExploreContainer from "../components/ExploreContainer";
 import { AuthContext } from "../context/auth";
+import React from 'react';
+import { IonSearchbar } from '@ionic/react';
+
+export default function searchBar() {
+
+}:
 
 export default function SearchPage() {
   const { user } = useContext(AuthContext);
@@ -28,4 +34,16 @@ export default function SearchPage() {
       </IonContent>
     </IonPage>
   );
+
+  function searchBar() {
+    return (
+      <>
+        <IonSearchbar></IonSearchbar>
+        <IonSearchbar placeholder="Custom Placeholder"></IonSearchbar>
+        <IonSearchbar disabled={true} placeholder="Disabled"></IonSearchbar>
+        <IonSearchbar value="Value"></IonSearchbar>
+        <IonSearchbar animated={true} placeholder="Animated"></IonSearchbar>
+      </>
+    );
+  }
 }
