@@ -40,24 +40,15 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 import "./theme/app.css";
 import { useContext } from "react";
-import { updateUserStatus, signOutUser } from "./util/user.server";
+import { signOutUser } from "./util/user.server";
 
 setupIonicReact();
 
 const App: React.FC = () => {
   const { user } = useContext(AuthContext);
 
-  // console.log(user);
-
   // We call the sign out user function when the user closes the application, so the user is set to offline
   window.addEventListener("beforeunload", () => {
-    signOutUser();
-  });
-
-  window.addEventListener("resume", () => {
-    updateUserStatus();
-  });
-  window.addEventListener("pause", () => {
     signOutUser();
   });
 
@@ -87,7 +78,7 @@ const App: React.FC = () => {
             <Route exact path="/signup">
               <SignUpPage />
             </Route>
-
+            {/* If the user is already logged in we redirect them to home page, otherwise go to login page */}
             <Route exact path="/">
               {user ? <Redirect to="/home" /> : <Redirect to="/login" />}
             </Route>

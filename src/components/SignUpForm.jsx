@@ -3,8 +3,6 @@ import {
   IonLabel,
   IonInput,
   IonButton,
-  IonSelect,
-  IonSelectOption,
   IonNote,
   useIonViewWillEnter,
 } from "@ionic/react";
@@ -20,7 +18,6 @@ export default function SignUpForm({ handleSubmit }) {
   const [repeatPassword, setRepeatPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [userType, setUserType] = useState("");
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
 
@@ -30,7 +27,6 @@ export default function SignUpForm({ handleSubmit }) {
   const [repeatPasswordError, setRepeatPasswordError] = useState("");
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
-  const [userTypeError, setUserTypeError] = useState("");
 
   useIonViewWillEnter(() => {
     // Getting the location of the device.
@@ -49,7 +45,6 @@ export default function SignUpForm({ handleSubmit }) {
         password: password,
         firstName: firstName,
         lastName: lastName,
-        userType: userType,
         image:
           "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
         location: {
@@ -103,12 +98,6 @@ export default function SignUpForm({ handleSubmit }) {
       validationSuccess = false;
     } else {
       setLastNameError("");
-    }
-    if (userType.length === 0) {
-      setUserTypeError("User type is required");
-      validationSuccess = false;
-    } else {
-      setUserTypeError("");
     }
 
     return validationSuccess;
@@ -173,19 +162,6 @@ export default function SignUpForm({ handleSubmit }) {
           onIonChange={(e) => setLastName(e.target.value)}
         />
         <IonNote slot="error">{lastNameError}</IonNote>
-      </IonItem>
-      <IonItem class="ion-invalid">
-        <IonLabel position="stacked">User type</IonLabel>
-        <IonSelect
-          interface="action-sheet"
-          placeholder="Select type"
-          onIonChange={(e) => setUserType(e.target.value)}
-        >
-          <IonSelectOption value="buyer">Buyer</IonSelectOption>
-          <IonSelectOption value="seller">Seller</IonSelectOption>
-          <IonSelectOption value="both">Both</IonSelectOption>
-        </IonSelect>
-        <IonNote slot="error">{userTypeError}</IonNote>
       </IonItem>
       <div className="btnsLogin">
         <IonButton type="submit">Sign up</IonButton>

@@ -6,6 +6,7 @@ import { getAuth } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
+// TODO: Use a .env file to keep config safe.
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDE3MCRKVikVihQv8a56FT05Y4FqrrAB5o",
@@ -21,6 +22,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
+// Initialize Authentication and get a reference to the service
 const auth = getAuth(app);
 
 // Initialize Cloud Firestore and get a reference to the service

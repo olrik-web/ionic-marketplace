@@ -1,19 +1,13 @@
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 import { useContext } from "react";
 import { Redirect } from "react-router";
 import ExploreContainer from "../components/ExploreContainer";
 import { AuthContext } from "../context/auth";
-import { auth } from "../util/firebase";
 
 export default function SearchPage() {
-    const { user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
+  // Redirect to login if we're not logged in
   if (!user) {
     return <Redirect to="/login" />;
   }

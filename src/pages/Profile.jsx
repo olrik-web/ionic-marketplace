@@ -1,29 +1,21 @@
-import {
-  IonButton,
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 import { Redirect, useHistory } from "react-router";
 import ExploreContainer from "../components/ExploreContainer";
 import { signOutUser } from "../util/user.server";
 import { Dialog } from "@capacitor/dialog";
-import { auth } from "../util/firebase";
 import { AuthContext } from "../context/auth";
 import { useContext } from "react";
 
 export default function Profile() {
   const history = useHistory();
-    const { user } = useContext(AuthContext);
-
+  const { user } = useContext(AuthContext);
 
   async function handleSignOut() {
     // Show dialog asking user if they really want to sign out
     const confirm = await showConfirm();
     // If they press ok, sign them out.
     if (confirm) {
+      //TODO: Show loader and hide loader maybe?
       await signOutUser();
       history.push("/login");
     }
@@ -34,13 +26,13 @@ export default function Profile() {
     const { value } = await Dialog.confirm({
       title: "Confirm",
       message: `Are you sure you'd like to sign out?`,
-      //TODO: Test if button titles are working
       okButtonTitle: "Yes, sign out",
       cancelButtonTitle: "No, stay signed in",
     });
     return value;
   }
 
+  // Redirect to login if we're not logged in
   if (!user) {
     return <Redirect to="/login" />;
   }

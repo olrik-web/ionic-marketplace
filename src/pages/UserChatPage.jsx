@@ -23,7 +23,9 @@ export default function UserChatPage() {
   }
 
   useEffect(() => {
-    async function fetchUser() {
+    async function fetchUserAndMessages() {
+      // TODO: Show loader
+      // Getting the user we are chatting with and setting state
       const userResult = await getUser(params.id);
       if (userResult.status === 200 && userResult.data) {
         setOtherUser(userResult.data);
@@ -34,6 +36,7 @@ export default function UserChatPage() {
       const messagesRef = collection(db, "messages", docId, "chat");
       // Quering the users collection without the current user.
       const q = query(messagesRef, orderBy("createdAt", "asc"));
+      // Attaching a listener so new messages are displayed immediately
       onSnapshot(q, (querySnapshot) => {
         // Pushing each user from the collection to a temporary array
         let tempMessages = [];
@@ -45,8 +48,7 @@ export default function UserChatPage() {
         setMessages(tempMessages);
       });
     }
-    fetchUser();
-    // }, [params.id, userId]);
+    fetchUserAndMessages();
   }, [params.id, docId]);
 
   async function handleSubmit(message) {
@@ -55,26 +57,8 @@ export default function UserChatPage() {
     //TODO: Show loader
     // present();
 
-    //TODO: Move function to messages.server.js
-    const result = await addDoc(collection(db, "messages", docId, "chat"), message);
-    console.log(result);
+    await addDoc(collection(db, "messages", docId, "chat"), message);
 
-    //TODO: Show error message if message wasn't sent
-
-    // if (result.status === 200) {
-    //   // history.push("/home");
-    //   // await Toast.show({
-    //   //   text: result.message,
-    //   //   position: "center",
-    //   //   duration: "short",
-    //   // });
-    // } else {
-    //   // await Toast.show({
-    //   //   text: result.message,
-    //   //   position: "center",
-    //   //   duration: "long",
-    //   // });
-    // }
     //TODO: Hide loader
     // dismiss();
 
@@ -86,6 +70,7 @@ export default function UserChatPage() {
     await deleteDoc(doc(db, "messages", docId, "chat", messageId));
   }
 
+  // Redirect to home if we're already logged in
   if (!user) {
     return <Redirect to="/login" />;
   }

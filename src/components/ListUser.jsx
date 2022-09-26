@@ -10,7 +10,10 @@ export default function ListUser({ selectedUser, chatView }) {
 
   useEffect(() => {
     if (selectedUser && selectedUser.lastOnline) {
-      // TODO: Describe this
+      /*
+       * timeConverter function takes a timestamp and returns either a precise date e.g. 19/9/2022 18:30 or
+       * the difference between the timestamp and the current time in minutes, hours, days, months or years.
+       */
       const timeConversion = timeConverter(selectedUser.lastOnline, false);
       if (timeConversion.message === "A few seconds ago...") {
         setLastOnlineTime("");
@@ -21,19 +24,6 @@ export default function ListUser({ selectedUser, chatView }) {
       }
     }
   }, [selectedUser]);
- 
-  if (chatView) {
-    return (
-      <IonItem key={selectedUser.id}>
-        <IonAvatar slot="start">
-          <IonImg src={selectedUser.image ? selectedUser.image : defaultImg} />
-        </IonAvatar>
-        <IonLabel>
-          <h2>{`${selectedUser.firstName} ${selectedUser.lastName}`} </h2>
-        </IonLabel>
-      </IonItem>
-    );
-  }
 
   return (
     <IonItem key={selectedUser.uid} button routerLink={`chats/${selectedUser.uid}`}>

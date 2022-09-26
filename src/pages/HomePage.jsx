@@ -1,42 +1,28 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonViewWillEnter } from "@ionic/react";
-import { doc, getDoc } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { Redirect } from "react-router";
 import ExploreContainer from "../components/ExploreContainer";
 import { AuthContext } from "../context/auth";
-import { db } from "../util/firebase";
 import { showTabBar } from "../util/helperMethods";
-import { updateUserStatus } from "../util/user.server";
+import { getUser, updateUserStatus } from "../util/user.server";
 
 export default function HomePage() {
   const { user } = useContext(AuthContext);
   const [currentUser, setCurrentUser] = useState({});
 
   useEffect(() => {
+    // TODO: Right now we don't use the current user for anything.
+    // Getting info about the user which is currently logged in
     async function getCurrentUser() {
       if (user) {
-        // console.log("User is not null");
-        // window.addEventListener("load", async () => {
-        //         console.log("Calling function");
-
-        //   await signInUser();
-        // });
-
-        // TODO: Move into util/user.server.js file
-        const docRef = doc(db, "users", user.uid);
-        try {
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            // console.log(docSnap.data());
-            setCurrentUser(docSnap.data());
-            if (!currentUser.isOnline) {
-              await updateUserStatus();
-            }
-          } else {
-            console.log("Document does not exist");
+        const userResult = await getUser(user.uid);
+        // If response is good we set state with the data
+        if (userResult.status === 200 && userResult.data) {
+          setCurrentUser(userResult.data);
+          // Updating the status so we appear logged in (online)
+          if (!currentUser.isOnline) {
+            await updateUserStatus();
           }
-        } catch (error) {
-          console.log(error);
         }
       }
     }
@@ -44,11 +30,11 @@ export default function HomePage() {
   }, [user, currentUser.isOnline]);
 
   useIonViewWillEnter(() => {
+    // Show the tabbar again which is hidden on login/signup page
     showTabBar();
   });
 
-  console.log(currentUser);
-
+  // Redirect to login if we're not logged in
   if (!user) {
     return <Redirect to="/login" />;
   }

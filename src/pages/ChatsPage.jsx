@@ -11,14 +11,13 @@ export default function ChatsPage() {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    // const data = await getUsers();
-    // if (data.status === 200) {
-    //   setUsers(data.fields);
-    // }
     if (auth.currentUser) {
+      // We get all users (except our self) and listen for changes e.g. their offline/online status
       const usersRef = collection(db, "users");
       // Quering the users collection without the current user.
       const q = query(usersRef, where("uid", "not-in", [auth.currentUser.uid]));
+      // TODO: Test if we need the unsub const
+      // Attaching a listener so user status changes are displayed immediately
       const unsub = onSnapshot(q, (querySnapshot) => {
         // Pushing each user from the collection to a temporary array
         let tempUsers = [];
@@ -32,9 +31,11 @@ export default function ChatsPage() {
     }
   }, []);
 
+  // Redirect to login if we're not logged in
   if (!user) {
     return <Redirect to="/login" />;
   }
+
   return (
     <IonPage>
       <IonHeader>

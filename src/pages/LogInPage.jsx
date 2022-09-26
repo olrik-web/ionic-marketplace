@@ -8,11 +8,8 @@ import {
 } from "@ionic/react";
 import { Redirect, useHistory } from "react-router";
 import LoginForm from "../components/LogInForm";
-import { signIn, validateUser } from "../util/user.server";
+import { signIn } from "../util/user.server";
 import { Toast } from "@capacitor/toast";
-import { auth, db } from "../util/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { doc, Timestamp, updateDoc } from "firebase/firestore";
 import { useContext } from "react";
 import { AuthContext } from "../context/auth";
 import { hideTabBar } from "../util/helperMethods";
@@ -22,6 +19,7 @@ export default function LogInPage() {
   const { user } = useContext(AuthContext);
 
   useIonViewWillEnter(() => {
+    // Hide the tabbar on login page
     hideTabBar();
   });
 
@@ -42,7 +40,7 @@ export default function LogInPage() {
       await Toast.show({
         text: result.message,
         position: "center",
-        duration: "long",
+        duration: "short",
       });
     }
     //TODO: Hide loader
