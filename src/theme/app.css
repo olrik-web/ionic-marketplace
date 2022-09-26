@@ -1,5 +1,53 @@
 .btnsLogin {
-    display: flex;
-    margin: 1rem 0;
-    justify-content: space-evenly;
+  display: flex;
+  margin: 1rem 0;
+  justify-content: space-evenly;
+}
+
+.chatMessageAlignRight {
+  text-align: right;
+}
+
+.chatMessageCard {
+  width: 80%;
+  padding: 0.5rem;
+  margin-top: 2px;
+  margin-left: 0;
+  margin-right: 0;
+  height: 100%;
+}
+
+.chatMessageItem {
+  margin-bottom: 400px;
+}
+
+.alignRight {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.chatIonAvatarEnd {
+  margin: 10px;
+}
+
+.chatForm {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 100;
+  /* padding-bottom: 1rem; */
+}
+
+.chatMessageImage {
+  max-width: 500px;
+  max-height: 500px;
+}
+
+.chatMessageImageSmall {
+  width: 100vw;
+  height: 100px;
+}
+
+.spacer {
+  margin-top: 200px;
 }

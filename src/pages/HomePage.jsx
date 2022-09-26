@@ -1,25 +1,55 @@
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  useIonViewWillEnter,
-} from "@ionic/react";
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonViewWillEnter } from "@ionic/react";
+import { doc, getDoc } from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
 import { Redirect } from "react-router";
 import ExploreContainer from "../components/ExploreContainer";
-import { showTabBar } from "../util/tabbar";
+import { AuthContext } from "../context/auth";
+import { db } from "../util/firebase";
+import { showTabBar } from "../util/helperMethods";
+import { updateUserStatus } from "../util/user.server";
 
 export default function HomePage() {
-  const userId = localStorage.getItem("user");
+  const { user } = useContext(AuthContext);
+  const [currentUser, setCurrentUser] = useState({});
+
+  useEffect(() => {
+    async function getCurrentUser() {
+      if (user) {
+        // console.log("User is not null");
+        // window.addEventListener("load", async () => {
+        //         console.log("Calling function");
+
+        //   await signInUser();
+        // });
+
+        // TODO: Move into util/user.server.js file
+        const docRef = doc(db, "users", user.uid);
+        try {
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            // console.log(docSnap.data());
+            setCurrentUser(docSnap.data());
+            if (!currentUser.isOnline) {
+              await updateUserStatus();
+            }
+          } else {
+            console.log("Document does not exist");
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+    getCurrentUser();
+  }, [user, currentUser.isOnline]);
 
   useIonViewWillEnter(() => {
     showTabBar();
   });
 
-  
+  console.log(currentUser);
 
-  if (!userId) {
+  if (!user) {
     return <Redirect to="/login" />;
   }
 

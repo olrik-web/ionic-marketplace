@@ -9,18 +9,26 @@ import { Redirect, useHistory } from "react-router";
 import SignUpForm from "../components/SignUpForm";
 import { createUser } from "../util/user.server";
 import { Toast } from "@capacitor/toast";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../util/firebase";
+import {setDoc, doc, Timestamp} from "firebase/firestore";
+import { AuthContext } from "../context/auth";
+import { useContext } from "react";
 
 export default function SignUpPage() {
   let history = useHistory();
-  const userId = localStorage.getItem("user");
+    const { user } = useContext(AuthContext);
+
 
   async function handleSubmit(newUser) {
     //TODO: Show loader
     // present();
 
     // Creating the user with the form data as parameter
+    
+
     const result = await createUser(newUser);
-    console.log(result);
+    // console.log(result);
 
     if (result.status === 200) {
       history.push("/login");
@@ -41,7 +49,7 @@ export default function SignUpPage() {
   }
 
   // Redirect to home if we're already logged in
-  if (userId) {
+  if (user) {
     return <Redirect to="/home" />;
   }
 

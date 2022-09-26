@@ -8,19 +8,23 @@ import {
 } from "@ionic/react";
 import { Redirect, useHistory } from "react-router";
 import ExploreContainer from "../components/ExploreContainer";
-import { signOut } from "../util/user.server";
+import { signOutUser } from "../util/user.server";
 import { Dialog } from "@capacitor/dialog";
+import { auth } from "../util/firebase";
+import { AuthContext } from "../context/auth";
+import { useContext } from "react";
 
 export default function Profile() {
   const history = useHistory();
-  const userId = localStorage.getItem("user");
+    const { user } = useContext(AuthContext);
+
 
   async function handleSignOut() {
     // Show dialog asking user if they really want to sign out
     const confirm = await showConfirm();
     // If they press ok, sign them out.
     if (confirm) {
-      signOut();
+      await signOutUser();
       history.push("/login");
     }
   }
@@ -37,7 +41,7 @@ export default function Profile() {
     return value;
   }
 
-  if (!userId) {
+  if (!user) {
     return <Redirect to="/login" />;
   }
 

@@ -1,63 +1,57 @@
 import { IonItem, IonLabel, IonAvatar, IonImg } from "@ionic/react";
 import { useEffect, useState } from "react";
-import { getUser } from "../util/user.server";
+import { timeConverter } from "../util/helperMethods";
 
-export default function ListUser({ user, chatView, message }) {
-  const defaultImg =
-    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png";
-  const [sender, setSender] = useState({});
+export default function ListUser({ selectedUser, chatView }) {
+  const [lastOnlineTime, setLastOnlineTime] = useState();
+  const [lastOnlineMessage, setLastOnlineMessage] = useState();
+
+  const defaultImg = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png";
 
   useEffect(() => {
-    async function fetchUser() {
-      if (message) {
-        const dataSender = await getUser(message.sender);
-        setSender(dataSender);
+    if (selectedUser && selectedUser.lastOnline) {
+      // TODO: Describe this
+      const timeConversion = timeConverter(selectedUser.lastOnline, false);
+      if (timeConversion.message === "A few seconds ago...") {
+        setLastOnlineTime("");
+        setLastOnlineMessage(timeConversion.message);
+      } else {
+        setLastOnlineTime(timeConversion.time);
+        setLastOnlineMessage(timeConversion.message);
       }
     }
-    fetchUser();
-  }, [message]);
-
-  if (message) {
-    if (sender.fields) {
-      return (
-        <IonItem>
-          <IonAvatar slot="start">
-            <IonImg
-              src={sender.fields.image ? sender.fields.image : defaultImg}
-            />
-          </IonAvatar>
-          <IonLabel>
-            <h2>{`${sender.fields.firstName} ${sender.fields.lastName}`} </h2>
-            <p>{message.text}</p>
-          </IonLabel>
-        </IonItem>
-      );
-    } else {
-      return <></>;
-    }
-  }
+  }, [selectedUser]);
+ 
   if (chatView) {
     return (
-      <IonItem key={user.id}>
+      <IonItem key={selectedUser.id}>
         <IonAvatar slot="start">
-          <IonImg src={user.image ? user.image : defaultImg} />
+          <IonImg src={selectedUser.image ? selectedUser.image : defaultImg} />
         </IonAvatar>
         <IonLabel>
-          <h2>{`${user.firstName} ${user.lastName}`} </h2>
+          <h2>{`${selectedUser.firstName} ${selectedUser.lastName}`} </h2>
         </IonLabel>
       </IonItem>
     );
   }
+
   return (
-    <IonItem key={user.id} button routerLink={`chats/${user.id}`}>
+    <IonItem key={selectedUser.uid} button routerLink={`chats/${selectedUser.uid}`}>
       <IonAvatar slot="start">
-        <IonImg src={user.image ? user.image : defaultImg} />
+        <IonImg src={selectedUser.image ? selectedUser.image : defaultImg} />
       </IonAvatar>
       <IonLabel>
-        <h2>{`${user.firstName} ${user.lastName}`} </h2>
+        <h2>
+          {`${selectedUser.firstName} ${selectedUser.lastName}`} {selectedUser.isOnline ? "Online" : "Offline"}
+        </h2>
         <p>
-          <small>{user.email}</small>
+          <small>{selectedUser.email}</small>
         </p>
+        {!selectedUser.isOnline && selectedUser.lastOnline && (
+          <p>
+            Last online: {lastOnlineTime} {lastOnlineMessage}
+          </p>
+        )}
       </IonLabel>
     </IonItem>
   );

@@ -16,6 +16,9 @@ import SearchPage from "./pages/SearchPage";
 import ProfilePage from "./pages/Profile";
 import LoginPage from "./pages/LogInPage";
 import SignUpPage from "./pages/SignUpPage";
+import ChatsPage from "./pages/ChatsPage";
+import UserChatPage from "./pages/UserChatPage";
+import { AuthContext } from "./context/auth";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -36,13 +39,27 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 import "./theme/app.css";
-import ChatsPage from "./pages/ChatsPage";
-import UserChatPage from "./pages/UserChatPage";
+import { useContext } from "react";
+import { updateUserStatus, signOutUser } from "./util/user.server";
 
 setupIonicReact();
 
 const App: React.FC = () => {
-  const userId = localStorage.getItem("user");
+  const { user } = useContext(AuthContext);
+
+  // console.log(user);
+
+  // We call the sign out user function when the user closes the application, so the user is set to offline
+  window.addEventListener("beforeunload", () => {
+    signOutUser();
+  });
+
+  window.addEventListener("resume", () => {
+    updateUserStatus();
+  });
+  window.addEventListener("pause", () => {
+    signOutUser();
+  });
 
   return (
     <IonApp>
@@ -72,7 +89,7 @@ const App: React.FC = () => {
             </Route>
 
             <Route exact path="/">
-              {userId ? <Redirect to="/home" /> : <Redirect to="/login" />}
+              {user ? <Redirect to="/home" /> : <Redirect to="/login" />}
             </Route>
           </IonRouterOutlet>
           <IonTabBar id="app-tab-bar" slot="bottom">

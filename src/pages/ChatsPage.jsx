@@ -1,31 +1,38 @@
-import {
-  IonContent,
-  IonHeader,
-  IonList,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
-import { useEffect, useState } from "react";
+import { IonContent, IonHeader, IonList, IonPage, IonTitle, IonToolbar } from "@ionic/react";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
 import { Redirect } from "react-router";
 import ListUser from "../components/ListUser";
-import { getUsers } from "../util/user.server";
+import { AuthContext } from "../context/auth";
+import { auth, db } from "../util/firebase";
 
 export default function ChatsPage() {
-  const userId = localStorage.getItem("user");
   const [users, setUsers] = useState([]);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    async function fetchUsers() {
-      const data = await getUsers();
-      if (data.status === 200) {
-        setUsers(data.fields);
-      }
+    // const data = await getUsers();
+    // if (data.status === 200) {
+    //   setUsers(data.fields);
+    // }
+    if (auth.currentUser) {
+      const usersRef = collection(db, "users");
+      // Quering the users collection without the current user.
+      const q = query(usersRef, where("uid", "not-in", [auth.currentUser.uid]));
+      const unsub = onSnapshot(q, (querySnapshot) => {
+        // Pushing each user from the collection to a temporary array
+        let tempUsers = [];
+        querySnapshot.forEach((doc) => {
+          tempUsers.push(doc.data());
+        });
+        // Setting the users with out temporary array
+        setUsers(tempUsers);
+      });
+      return () => unsub;
     }
-    fetchUsers();
   }, []);
 
-  if (!userId) {
+  if (!user) {
     return <Redirect to="/login" />;
   }
   return (
@@ -42,8 +49,8 @@ export default function ChatsPage() {
           </IonToolbar>
         </IonHeader>
         <IonList>
-          {users.map((user) => (
-            <ListUser key={user.id} user={user} />
+          {users.map((selectedUser) => (
+            <ListUser key={selectedUser.uid} selectedUser={selectedUser} />
           ))}
         </IonList>
       </IonContent>
