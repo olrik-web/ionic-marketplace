@@ -6,17 +6,14 @@ import {
   IonToolbar,
   useIonViewWillEnter,
 } from "@ionic/react";
-import { Redirect, useHistory } from "react-router";
+import { useHistory } from "react-router";
 import LoginForm from "../components/LogInForm";
 import { signIn } from "../util/user.server";
 import { Toast } from "@capacitor/toast";
-import { useContext } from "react";
-import { AuthContext } from "../context/auth";
 import { hideTabBar } from "../util/helperMethods";
 
 export default function LogInPage() {
   let history = useHistory();
-  const { user } = useContext(AuthContext);
 
   useIonViewWillEnter(() => {
     // Hide the tabbar on login page
@@ -24,9 +21,7 @@ export default function LogInPage() {
   });
 
   async function handleSubmit(user) {
-    //TODO: Show loader
-    // present();
-
+    // TODO: Do we need to call Prevent default???
     const result = await signIn(user);
 
     if (result.status === 200) {
@@ -43,13 +38,6 @@ export default function LogInPage() {
         duration: "short",
       });
     }
-    //TODO: Hide loader
-    // dismiss();
-  }
-
-  // Redirect to home if we're already logged in
-  if (user) {
-    return <Redirect to="/home" />;
   }
 
   return (

@@ -5,21 +5,16 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { Redirect, useHistory } from "react-router";
+import { useHistory } from "react-router";
 import SignUpForm from "../components/SignUpForm";
 import { createUser } from "../util/user.server";
 import { Toast } from "@capacitor/toast";
-import { AuthContext } from "../context/auth";
-import { useContext } from "react";
 
 export default function SignUpPage() {
   let history = useHistory();
-    const { user } = useContext(AuthContext);
-
 
   async function handleSubmit(newUser) {
-    //TODO: Show loader
-    // present();
+    //TODO: Do we need to call prevent default here???
 
     // Creating the user with the form data as parameter
     const result = await createUser(newUser);
@@ -39,14 +34,6 @@ export default function SignUpPage() {
         duration: "long",
       });
     }
-
-    //TODO: Hide loader
-    // dismiss();
-  }
-
-  // Redirect to home if we're already logged in
-  if (user) {
-    return <Redirect to="/home" />;
   }
 
   return (
