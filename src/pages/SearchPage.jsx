@@ -6,9 +6,24 @@ import { AuthContext } from "../context/auth";
 import React from 'react';
 import { IonSearchbar } from '@ionic/react';
 
-export default function searchBar() {
+/* export default function searchBar() {
+  const { user } = IonSearchbar
+};
+*/
 
-}:
+export default function searchBar();
+ 
+function searchBar() {
+  return (
+    <>
+      <IonSearchbar></IonSearchbar>
+      <IonSearchbar placeholder="Custom Placeholder"></IonSearchbar>
+      <IonSearchbar disabled={true} placeholder="Disabled"></IonSearchbar>
+      <IonSearchbar value="Value"></IonSearchbar>
+      <IonSearchbar animated={true} placeholder="Animated"></IonSearchbar>
+    </>
+  );
+}
 
 export default function SearchPage() {
   const { user } = useContext(AuthContext);
@@ -35,15 +50,4 @@ export default function SearchPage() {
     </IonPage>
   );
 
-  function searchBar() {
-    return (
-      <>
-        <IonSearchbar></IonSearchbar>
-        <IonSearchbar placeholder="Custom Placeholder"></IonSearchbar>
-        <IonSearchbar disabled={true} placeholder="Disabled"></IonSearchbar>
-        <IonSearchbar value="Value"></IonSearchbar>
-        <IonSearchbar animated={true} placeholder="Animated"></IonSearchbar>
-      </>
-    );
-  }
 }
