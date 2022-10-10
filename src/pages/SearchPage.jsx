@@ -1,17 +1,16 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSearchbar } from "@ionic/react";
 import { useContext } from "react";
 import { Redirect } from "react-router";
 import ExploreContainer from "../components/ExploreContainer";
 import { AuthContext } from "../context/auth";
-import React from 'react';
-import { IonSearchbar } from '@ionic/react';
+// import React from 'react';
 
 /* export default function searchBar() {
   const { user } = IonSearchbar
 };
 */
 
-export default function searchBar();
+// export default function searchBar();
  
 function searchBar() {
   return (
@@ -26,6 +25,7 @@ function searchBar() {
 }
 
 export default function SearchPage() {
+  
   const { user } = useContext(AuthContext);
 
   // Redirect to login if we're not logged in
@@ -34,6 +34,9 @@ export default function SearchPage() {
   }
   return (
     <IonPage>
+      
+      <ion-searchbar> </ion-searchbar>
+      
       <IonHeader>
         <IonToolbar>
           <IonTitle>Search</IonTitle>
@@ -49,5 +52,16 @@ export default function SearchPage() {
       </IonContent>
     </IonPage>
   );
-
 }
+
+// Search method
+function search(query) {
+  if (!query) { // revert back to the original array if no query
+    this.usersArrayFiltered = [...this.usersArray];
+  } else { // filter array by query
+    this.usersArrayFiltered = this.usersArray.filter((user) => {
+      return (user.name.includes(query) || user.email.includes(query) || user.phone.includes(query));
+    })
+  };
+}
+
