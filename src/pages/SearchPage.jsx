@@ -1,32 +1,28 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSearchbar } from "@ionic/react";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Redirect } from "react-router";
-import ExploreContainer from "../components/ExploreContainer";
+import ProductCard from "../components/ProductCard";
 import { AuthContext } from "../context/auth";
-// import React from 'react';
 
-/* export default function searchBar() {
-  const { user } = IonSearchbar
-};
-*/
-
-export default function searchBar();
- 
-function searchBar() {
-  return (
-    <>
-      <IonSearchbar></IonSearchbar>
-      <IonSearchbar placeholder="Custom Placeholder"></IonSearchbar>
-      <IonSearchbar disabled={true} placeholder="Disabled"></IonSearchbar>
-      <IonSearchbar value="Value"></IonSearchbar>
-      <IonSearchbar animated={true} placeholder="Animated"></IonSearchbar>
-    </>
-  );
-}
 
 export default function SearchPage() {
   
   const { user } = useContext(AuthContext);
+
+  const [searchText, setSearchText] = useState('');
+  
+  // Create array of objects
+  const items = [
+    { title: 'Apple', type: 'Fruit' },
+    { title: 'Banana', type: 'Fruit' },
+    { title: 'Carrot', type: 'Vegetable' },
+    { title: 'Potato', type: 'Vegetable' },
+  
+  ];
+
+  // Filter array of objects
+  const filteredItems = items.filter(item => item.title.toLowerCase().includes(searchText.toLowerCase()));
+
 
   // Redirect to login if we're not logged in
   if (!user) {
@@ -34,9 +30,7 @@ export default function SearchPage() {
   }
   return (
     <IonPage>
-      
-      <ion-searchbar> </ion-searchbar>
-      
+    
       <IonHeader>
         <IonToolbar>
           <IonTitle>Search</IonTitle>
@@ -48,20 +42,12 @@ export default function SearchPage() {
             <IonTitle size="large">Search</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer name="Search page" />
+        <IonSearchbar value={searchText} onIonChange={(e)=>setSearchText(e.detail.value)}></IonSearchbar>
+        {filteredItems.map((item, index) => (
+          <ProductCard product={item} key={index} />
+        ))}
+        
       </IonContent>
     </IonPage>
   );
 }
-
-// Search method
-function search(query) {
-  if (!query) { // revert back to the original array if no query
-    this.usersArrayFiltered = [...this.usersArray];
-  } else { // filter array by query
-    this.usersArrayFiltered = this.usersArray.filter((user) => {
-      return (user.name.includes(query) || user.email.includes(query) || user.phone.includes(query));
-    })
-  };
-}
-
