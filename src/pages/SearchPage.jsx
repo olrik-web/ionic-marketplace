@@ -17,8 +17,8 @@ export default function SearchPage() {
     { title: 'Banana', type: 'Fruit' },
     { title: 'Carrot', type: 'Vegetable' },
     { title: 'Potato', type: 'Vegetable' },
-  
   ];
+
 
   // Filter array of objects
   const filteredItems = items.filter(item => item.title.toLowerCase().includes(searchText.toLowerCase()));
@@ -42,9 +42,10 @@ export default function SearchPage() {
             <IonTitle size="large">Search</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonSearchbar value={searchText} onIonChange={(e)=>setSearchText(e.detail.value)}></IonSearchbar>
+        <IonSearchbar autocorrect = "on" spellcheck = {true} showClearButton="focus" value={searchText} onIonChange={(e)=>setSearchText(e.detail.value)}></IonSearchbar>
         {filteredItems.map((item, index) => (
-          <ProductCard product={item} key={index} />
+           <ProductCard product={item} key={index} />
+          
         ))}
         
       </IonContent>
