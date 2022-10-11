@@ -10,7 +10,7 @@ import { AuthContext } from "../context/auth";
 };
 */
 
-// export default function searchBar();
+export default function searchBar();
  
 function searchBar() {
   return (
