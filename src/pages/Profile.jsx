@@ -16,6 +16,7 @@ import { Dialog } from "@capacitor/dialog";
 import { useState } from "react";
 import { auth } from "../util/firebase";
 import { Toast } from "@capacitor/toast";
+import { EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 
 export default function Profile() {
   const history = useHistory();
@@ -24,6 +25,7 @@ export default function Profile() {
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [currentEmail, setCurrentEmail] = useState("");
 
   useIonViewWillEnter(() => {
     getCurrentUser();
@@ -38,6 +40,7 @@ export default function Profile() {
         setEmail(userResult.data.email);
         setFirstName(userResult.data.firstName);
         setLastName(userResult.data.lastName);
+        setCurrentEmail(userResult.data.email);
       }
     }
   }
@@ -66,14 +69,25 @@ export default function Profile() {
   async function submitEvent(event) {
     event.preventDefault();
 
-    let updatePassword = false;
-    // If the password and confirm password fields are not empty, we check if they match
+    let shouldUpdatePassword = false;
+    let shouldUpdateEmail = false;
+
+    // If the user has entered a password, we need to update it
     if (password !== "" && confirmPassword !== "") {
-      if (password !== confirmPassword) {
+      if (password.length < 6) {
         await Toast.show({
-          text: "Passwords do not match",
+          text: "Password must be at least 6 characters long",
+          duration: "long",
         });
         return;
+      } else if (password !== confirmPassword) {
+        await Toast.show({
+          text: "Passwords do not match",
+          duration: "long",
+        });
+        return;
+      } else {
+        shouldUpdatePassword = true;
       }
     }
 
@@ -85,11 +99,13 @@ export default function Profile() {
       return;
     }
 
-    if(email === "") {
+    if (email === "") {
       await Toast.show({
         text: "Email is required",
       });
       return;
+    } else if (email !== currentEmail) {
+      shouldUpdateEmail = true;
     }
 
     // Show dialog asking user if they really want to sign out
@@ -102,7 +118,37 @@ export default function Profile() {
         password,
       };
 
-      const userResult = await updateUser(user);
+      // If the user has changed their email or password, we need to reauthenticate them
+      if (shouldUpdateEmail || shouldUpdatePassword) {
+        // Open a dialog asking for their login credentials
+        const { value } = await Dialog.prompt({
+          title: "Reauthenticate",
+          message: "Please enter your current password",
+          inputPlaceholder: "Password",
+          okButtonTitle: "Confirm",
+          cancelButtonTitle: "Cancel",
+        });
+
+        // If they press cancel, we return
+        if (!value) {
+          return;
+        }
+        try {
+          // Create a credential with the current email and password
+          const credential = EmailAuthProvider.credential(auth.currentUser.email, value);
+          // Reauthenticate the user
+          await reauthenticateWithCredential(auth.currentUser, credential);
+        } catch (error) {
+          console.log(error);
+          await Toast.show({
+            text: "Incorrect password",
+          });
+          return;
+        }
+      }
+
+      // Update the user
+      const userResult = await updateUser(user, shouldUpdatePassword, shouldUpdateEmail);
       if (userResult.status === 200) {
         // If response is good, we show a toast
         await Toast.show({
@@ -110,6 +156,10 @@ export default function Profile() {
           position: "center",
           duration: "short",
         });
+        setPassword("");
+        setConfirmPassword("");
+        // And we redirect the user to the home page
+        history.push("/home");
       } else {
         // If response is bad, we show an error toast
         await Toast.show({
