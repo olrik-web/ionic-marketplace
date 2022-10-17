@@ -23,8 +23,8 @@ export default function HomePage() {
   useEffect(() => {
     async function fetchPost() {
       const postResult = await getPosts();
-      if (postResult.status === 200 && postResult.data) {
-        setPosts(postResult.data);
+      if (postResult.status === 200 && postResult.posts) {
+        setPosts(postResult.posts);
       }
     }
     fetchPost();
