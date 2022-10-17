@@ -1,4 +1,10 @@
-import { setDoc, doc, getDocs, collection } from "firebase/firestore";
+import {
+  addDoc,
+  doc,
+  getDocs,
+  collection,
+  Timestamp,
+} from "firebase/firestore";
 import { newspaper } from "ionicons/icons";
 import { db } from "./firebase";
 
@@ -8,14 +14,12 @@ export async function createPost(newPost) {
   let result;
 
   try {
-    await setDoc(doc(db, COLLECTION_POSTS, "posts"), {
-      Title: newPost.title,
-      price: newPost.price,
-      size: newPost.size,
-      image: newPost.image,
-      description: newPost.description,
-      postId: newPost.postId,
+    await addDoc(collection(db, COLLECTION_POSTS), {
+      ...newPost,
+      createdAt: Timestamp.fromDate(new Date()),
+      updatedAt: Timestamp.fromDate(new Date()),
     });
+
     result = {
       message: "Post was created succesfully.",
       status: 200,
