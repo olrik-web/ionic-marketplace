@@ -1,0 +1,130 @@
+{
+"products": {
+"1mNVXMNbZWjKsiaTFsDw": {
+"title": "Ubrugte højhæle",
+"price":250,
+"size":"35",
+"image": "https://images.unsplash.com/photo-1642049888276-9c9f0a1a8758?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyfHx8fHx8Mnx8MTY0MjA3NTAwMQ&ixlib=rb-1.2.1&q=80&w=400",
+"body": "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla",
+"uid": "GFCogUyrdizw6dD221Qp"
+},
+"5tl4jHHSRaKEB0UW9nQd": {
+"title": "Nike Air",
+"price":230,
+"size":"35",
+"uid": "HlvRHr58C05guOLl64k5",
+"body": "voluptatem cumque tenetur consequatur expedita ipsum nemo quia explicabo\naut eum minima consequatur\ntempore cumque quae est et\net in consequuntur voluptatem voluptates aut",
+"image": "https://images.unsplash.com/photo-1642013126529-f674c5b87dbe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwxNXx8fHx8fDJ8fDE2NDIwNzUwMzQ&ixlib=rb-1.2.1&q=80&w=400"
+},
+"6RtyNxxTYIBDRODr3dwv": {
+"image": "https://images.unsplash.com/photo-1642047538308-29a5ef5df89c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyM3x8fHx8fDJ8fDE2NDIwNzUwNzQ&ixlib=rb-1.2.1&q=80&w=400",
+"body": "cupiditate quo est a modi nesciunt soluta\nipsa voluptas error itaque dicta in\nautem qui minus magnam et distinctio eum\naccusamus ratione error aut",
+"uid": "LWPSKpRvx7Htyjlb8JqV",
+"title": "Ralph Lauren skjorte", 
+"price":230,
+"size":"s"
+},
+"8H0oH1WlDNfqyZAehXe1": {
+"body": "deserunt eos nobis asperiores et hic\nest debitis repellat molestiae optio\nnihil ratione ut eos beatae quibusdam distinctio maiores\nearum voluptates et aut adipisci ea maiores voluptas maxime",
+"image": "https://images.unsplash.com/photo-1642003106566-41d49e0930f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwxMHx8fHx8fDJ8fDE2NDIwNzUwMDE&ixlib=rb-1.2.1&q=80&w=400",
+"title": "Nike trøje",
+"uid": "SaW39AGOfU8DMUUG0FhJ",
+"price":345,
+"size":"l"
+},
+"9yHtqIcc25e4kzMInds6": {
+"body": "ex quod dolorem ea eum iure qui provident amet\nquia qui facere excepturi et repudiandae\nasperiores molestias provident\nminus incidunt vero fugit rerum sint sunt excepturi provident",
+"uid": "WKjy6B8IfDJxIsBbyxEe",
+"image": "https://images.unsplash.com/photo-1642053427171-45b13e6730db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyN3x8fHx8fDJ8fDE2NDIwNzUwNzQ&ixlib=rb-1.2.1&q=80&w=400",
+"title": "Hunter Gummistøvler",
+"price":400,
+"size":"40"
+}
+},
+"users": {
+"AlOr0n80qPLrqA0vJl48": {
+"title": "Lecturer",
+"mail": "mnor@eaaa.dk",
+"image": "https://www.eaaa.dk/media/oayjq02h/martin-n%C3%B8hr.jpg?anchor=center&mode=crop&width=800&height=450&rnd=132792921658800000&format=webp",
+"name": "Martin Aagaard Nøhr",
+"phone": "72286320"
+},
+"GFCogUyrdizw6dD221Qp": {
+"name": "Morten Algy Bonderup",
+"title": "Senior Lecturer",
+"phone": "72286339",
+"image": "https://www.baaa.dk/media/hi4lv5hw/morten-bonderup.jpg?anchor=center&mode=crop&width=800&height=450&rnd=132792921669800000&format=webp",
+"mail": "moab@eaaa.dk"
+},
+"HlvRHr58C05guOLl64k5": {
+"image": "https://www.eaaa.dk/media/bdojel41/dan-okkels-brendstrup.jpg?anchor=center&mode=crop&width=800&height=450&rnd=132792921559630000&format=webp",
+"title": "Lecturer",
+"mail": "dob@eaaa.dk",
+"name": "Dan Okkels Brendstrup",
+"phone": "72286327"
+},
+"LWPSKpRvx7Htyjlb8JqV": {
+"image": "https://www.baaa.dk/media/3zihz21l/kim-elkjaer-marcher-jepsen.jpg?anchor=center&mode=crop&width=800&height=450&rnd=132792921620830000&format=webp",
+"name": "Kim Elkjær Marcher-Jepsen",
+"title": "Senior Lecturer",
+"phone": "7228 6325",
+"mail": "kije@eaaa.dk"
+},
+"SaW39AGOfU8DMUUG0FhJ": {
+"phone": "72286316",
+"mail": "bki@eaaa.dk",
+"image": "https://www.baaa.dk/media/u4gorzsd/birgitte-kirk-iversen2.jpg?anchor=center&mode=crop&width=800&height=450&rnd=132792921541630000&format=webp",
+"name": "Birgitte Kirk Iversen",
+"title": "Senior Lecturer"
+},
+"WKjy6B8IfDJxIsBbyxEe": {
+"phone": "72283264",
+"title": "Lecturer",
+"name": "Jes Arbov",
+"mail": "jear@eaaa.dk",
+"image": "https://www.eaaa.dk/media/opybpteb/jes-arbov.jpg?anchor=center&mode=crop&width=800&height=450&rnd=132792921604700000&format=webp"
+},
+"ZfPTVEMQKf9vhNiUh0bj": {
+"phone": "72286345",
+"image": "https://www.baaa.dk/media/b5ahrlra/maria-louise-bendixen.jpg?anchor=center&mode=crop&width=800&height=450&rnd=132792921650330000&format=webp",
+"mail": "mlbe@eaaa.dk",
+"name": "Maria Louise Bendixen",
+"title": "Senior Lecturer"
+},
+"fTs84KRoYw5pRZEWCq2Z": {
+"mail": "race@eaaa.dk",
+"name": "Rasmus Cederdorff",
+"image": "https://www.baaa.dk/media/devlvvgj/rasmus-cederdorff.jpg?anchor=center&mode=crop&width=800&height=450&rnd=132792921695570000&format=webp",
+"phone": "72286318",
+"title": "Senior Lecturer"
+},
+"fjpRTRTjZHwrq3tTLHri": {
+"image": "https://www.baaa.dk/media/5buh1xeo/anne-kirketerp.jpg?anchor=center&mode=crop&width=800&height=450&rnd=132792921531600000&format=webp",
+"name": "Anne Kirketerp",
+"phone": "72286380",
+"mail": "anki@eaaa.dk",
+"title": "Head of Department"
+},
+"pqzGY1MnHYm3I4Ca79Xn": {
+"image": "https://www.eaaa.dk/media/14qpfeq4/line-skj%C3%B8dt.jpg?anchor=center&mode=crop&width=800&height=450&rnd=132792921638700000&format=webp",
+"title": "Senior Lecturer & Internship Coordinator",
+"mail": "lskj@eaaa.dk",
+"phone": "72286336",
+"name": "Line Skjødt"
+},
+"qzeiwWfvceyfY3ntBPGv": {
+"name": "Anne Storm Rasmussen",
+"mail": "anst@eaaa.dk",
+"title": "Rector",
+"image": "https://www.baaa.dk/media/uqxhqlzq/anne-storm-rasmussen.jpg?anchor=center&mode=crop&width=800&height=450&rnd=132792921534400000&format=webp",
+"phone": "72286001"
+},
+"vnH85C4TbGnSTnylYf8I": {
+"title": "Lecturer",
+"image": "https://www.eaaa.dk/media/lxzcybme/kasper-topp.jpg?anchor=center&mode=crop&width=800&height=450&rnd=132792921618200000&format=webp",
+"mail": "kato@eaaa.dk",
+"name": "Kasper Fischer Topp",
+"phone": "72286328"
+}
+}
+}

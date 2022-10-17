@@ -1,0 +1,24 @@
+.product-img {
+    object-fit: cover;
+    height: 200px;
+    width: 100%;
+}
+
+.product-price {
+    font-size: larger;
+}
+
+.ionCard-item {
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+.ionCard {
+    border-radius: 2%;
+}
+
+.bookmark {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: end;
+}
