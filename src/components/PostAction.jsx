@@ -31,15 +31,11 @@ import {IonButton, IonIcon, useIonActionSheet, useIonAlert} from "@ionic/react";
   
     // TODO: Delete post
     async function deletePost() {
-       method: "DELETE",
-      
       await Toast.show({
         text: "Post deleted!",
         position: "center",
         duration: "long",
       });
-
-      console.log(response);
     }
   
     return (
@@ -47,3 +43,4 @@ import {IonButton, IonIcon, useIonActionSheet, useIonAlert} from "@ionic/react";
         <IonIcon slot="icon-only" icon={ellipsisHorizontalOutline} />
       </IonButton>
     );
+  }
