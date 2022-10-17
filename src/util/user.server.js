@@ -125,3 +125,22 @@ export async function getUser(uid) {
     return { status: 400 };
   }
 }
+
+// This function is called on the profile page to update the user information
+export async function updateUser(user) {
+  try {
+    await updateDoc(doc(db, COLLECTION_USERS, auth.currentUser.uid), {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+    });
+    // Update email and password in Firebase Authentication
+    await auth.currentUser.updateEmail(user.email);
+    await auth.currentUser.updatePassword(user.password);
+    
+    return { status: 200 };
+  } catch (e) {
+    console.log(e);
+    return { status: 400 };
+  }
+}
