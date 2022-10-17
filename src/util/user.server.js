@@ -1,4 +1,8 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore";
 import { auth, db } from "./firebase";
 
@@ -8,7 +12,11 @@ export async function createUser(newUser) {
   let result;
   try {
     // Create user in Firebase Authentication
-    const response = await createUserWithEmailAndPassword(auth, newUser.email, newUser.password);
+    const response = await createUserWithEmailAndPassword(
+      auth,
+      newUser.email,
+      newUser.password
+    );
 
     // Save user to Firebase Cloud Firestore in the users collection.
     await setDoc(doc(db, COLLECTION_USERS, response.user.uid), {
@@ -39,7 +47,11 @@ export async function signIn(user) {
   let result;
   try {
     // TODO: Implement other means of sign in? E.g. google, github and such
-    const response = await signInWithEmailAndPassword(auth, user.email, user.password);
+    const response = await signInWithEmailAndPassword(
+      auth,
+      user.email,
+      user.password
+    );
 
     // Update status of user so the user appears online when logged in.
     await updateDoc(doc(db, COLLECTION_USERS, response.user.uid), {
