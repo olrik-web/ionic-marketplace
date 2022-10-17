@@ -3,10 +3,10 @@ import { useContext, useState } from "react";
 import { Redirect } from "react-router";
 import ProductCard from "../components/ProductCard";
 import { AuthContext } from "../context/auth";
-
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
+import ExploreContainer from "../components/ExploreContainer";
 
 export default function SearchPage() {
-  
   const { user } = useContext(AuthContext);
 
   const [searchText, setSearchText] = useState('');
@@ -28,6 +28,7 @@ export default function SearchPage() {
   if (!user) {
     return <Redirect to="/login" />;
   }
+
   return (
     <IonPage>
     
