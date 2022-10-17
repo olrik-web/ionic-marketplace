@@ -1,14 +1,11 @@
 import { IonContent, IonHeader, IonList, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
-import { useContext, useEffect, useState } from "react";
-import { Redirect } from "react-router";
+import { useEffect, useState } from "react";
 import ListUser from "../components/ListUser";
-import { AuthContext } from "../context/auth";
 import { auth, db } from "../util/firebase";
 
 export default function ChatsPage() {
   const [users, setUsers] = useState([]);
-  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     if (auth.currentUser) {
@@ -30,11 +27,6 @@ export default function ChatsPage() {
       return () => unsub;
     }
   }, []);
-
-  // Redirect to login if we're not logged in
-  if (!user) {
-    return <Redirect to="/login" />;
-  }
 
   return (
     <IonPage>
