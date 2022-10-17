@@ -33,4 +33,4 @@ export default function ProductListItem({ product }) {
       </IonCardContent>
     </IonCard>
   );
-}
+} 
