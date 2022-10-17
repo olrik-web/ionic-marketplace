@@ -1,0 +1,43 @@
+.product-img {
+    object-fit: cover;
+    height: 200px;
+    width: 500px;
+}
+
+.product-price {
+    font-size: larger;
+}
+
+.ionCard-item {
+    display: grid;
+    grid-template-columns: auto auto auto;
+
+    
+    
+}
+
+.ionCard {
+    border-radius: 2%;
+    width: auto;
+   
+}
+
+.bookmark {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: end;
+}
+
+
+@media only screen and (max-width: 900px) {
+    .ionCard-item {
+            grid-template-columns: auto auto ;
+    }
+
+    .product-img{
+        height: 200px;
+        width: 100%;
+       
+        
+    }
+}
