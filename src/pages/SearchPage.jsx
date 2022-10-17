@@ -1,11 +1,8 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSearchbar } from "@ionic/react";
-import { useContext, useState } from "react";
-import { Redirect } from "react-router";
+import { useState } from "react";
 import ProductCard from "../components/ProductCard";
-import { AuthContext } from "../context/auth";
 
 export default function SearchPage() {
-  const { user } = useContext(AuthContext);
 
   const [searchText, setSearchText] = useState('');
   
@@ -20,12 +17,6 @@ export default function SearchPage() {
 
   // Filter array of objects
   const filteredItems = items.filter(item => item.title.toLowerCase().includes(searchText.toLowerCase()));
-
-
-  // Redirect to login if we're not logged in
-  if (!user) {
-    return <Redirect to="/login" />;
-  }
 
   return (
     <IonPage>
