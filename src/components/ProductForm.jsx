@@ -18,7 +18,6 @@ import { categories } from "../config/categories";
 export default function PostForm({ post, handleSubmit }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState("");
   const [imageElement, setImageElement] = useState("");
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
@@ -33,7 +32,7 @@ export default function PostForm({ post, handleSubmit }) {
     if (post) {
       setTitle(post.title);
       setDescription(post.description);
-      setImage(post.image);
+      setImageElement(post.image);
     }
   }, [post]);
 
@@ -44,7 +43,7 @@ export default function PostForm({ post, handleSubmit }) {
     const formData = {
       title: title,
       description: description,
-      image: imageElement ? imageElement : image,
+      image: imageElement ? imageElement : fallbackUrl,
       latitude: latitude ? latitude : 0,
       longitude: longitude ? longitude : 0,
       price: price,
@@ -86,26 +85,15 @@ export default function PostForm({ post, handleSubmit }) {
       </IonItem>
       <IonItem>
         <IonLabel position="stacked">Price</IonLabel>
-        <IonInput
-          value={price}
-          placeholder="Give your item a price"
-          onIonChange={(e) => setPrice(e.target.value)}
-        />
+        <IonInput value={price} placeholder="Give your item a price" onIonChange={(e) => setPrice(e.target.value)} />
       </IonItem>
       <IonItem>
         <IonLabel position="stacked">Size</IonLabel>
-        <IonInput
-          value={size}
-          placeholder="What size is your item?"
-          onIonChange={(e) => setSize(e.target.value)}
-        />
+        <IonInput value={size} placeholder="What size is your item?" onIonChange={(e) => setSize(e.target.value)} />
       </IonItem>
       <IonItem>
         <IonLabel position="stacked">Category</IonLabel>
-        <IonSelect
-          value={category}
-          onIonChange={(e) => setCategory(e.target.value)}
-        >
+        <IonSelect value={category} onIonChange={(e) => setCategory(e.target.value)} placeholder="Select a category">
           {categories.map((category) => (
             <IonSelectOption key={category} value={category}>
               {category}
@@ -122,23 +110,7 @@ export default function PostForm({ post, handleSubmit }) {
         ></IonTextarea>
       </IonItem>
       <IonItem>
-        <IonLabel position="stacked">Image URL</IonLabel>
-        <IonInput
-          value={image}
-          type="url"
-          placeholder="Paste url to your image"
-          onIonChange={(e) => setImage(e.target.value)}
-        />
-      </IonItem>
-      <IonItem>
-        <IonLabel position="stacked">Image Preview</IonLabel>
-        <IonImg
-          className="ion-padding"
-          src={image === "" ? fallbackUrl : image}
-        />
-      </IonItem>
-      <IonItem>
-        <IonLabel position="stacked">Or take a picture</IonLabel>
+        <IonLabel position="stacked">Take a picture of your item</IonLabel>
         <IonButton onClick={takePicture} color="primary">
           Upload Image
         </IonButton>
