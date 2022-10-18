@@ -19,7 +19,7 @@ import SignUpPage from "./pages/SignUpPage";
 import ChatsPage from "./pages/ChatsPage";
 import UserChatPage from "./pages/UserChatPage";
 import AddPage from "./pages/AddPage";
-// import { AuthContext } from "./context/auth";
+import { App } from "@capacitor/app";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -42,7 +42,7 @@ import "./theme/variables.css";
 import "./theme/app.css";
 import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { signOutUser } from "./util/user.server";
+import { signOutUser, updateUserStatus } from "./util/user.server";
 
 setupIonicReact();
 
@@ -105,13 +105,21 @@ function PublicRoutes() {
   );
 }
 
-const App: React.FC = () => {
+const IonicApp: React.FC = () => {
   const [userIsAuthenticated, setUserIsAuthenticated] = useState(localStorage.getItem("userIsAuthenticated"));
   const auth = getAuth();
 
   // We call the sign out user function when the user closes the application, so the user is set to offline
   window.addEventListener("beforeunload", () => {
     signOutUser();
+  });
+
+  App.addListener("appStateChange", ({ isActive }) => {
+    if (!isActive) {
+      updateUserStatus("offline");
+    } else {
+      updateUserStatus("online");
+    }
   });
 
   useEffect(() => {
@@ -140,4 +148,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default IonicApp;

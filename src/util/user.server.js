@@ -49,7 +49,7 @@ export async function signIn(user) {
     localStorage.setItem("userIsAuthenticated", "true");
     // Update status of user so the user appears online when logged in.
     await updateDoc(doc(db, COLLECTION_USERS, response.user.uid), {
-      isOnline: true,
+      isOnline: "online",
     });
 
     // Response is good.
@@ -76,7 +76,7 @@ export async function signOutUser() {
   try {
     await updateDoc(doc(db, COLLECTION_USERS, auth.currentUser.uid), {
       lastOnline: Timestamp.fromDate(new Date()),
-      isOnline: false,
+      isOnline: "offline",
     });
     localStorage.removeItem("userIsAuthenticated");
 
@@ -89,11 +89,18 @@ export async function signOutUser() {
 /*
  * In this function we just update the user status to appear online
  */
-export async function updateUserStatus() {
+export async function updateUserStatus(status) {
   try {
-    await updateDoc(doc(db, COLLECTION_USERS, auth.currentUser.uid), {
-      isOnline: true,
-    });
+    if (status === "online") {
+      await updateDoc(doc(db, COLLECTION_USERS, auth.currentUser.uid), {
+        isOnline: "online",
+      });
+    } else {
+      await updateDoc(doc(db, COLLECTION_USERS, auth.currentUser.uid), {
+        isOnline: "offline",
+        lastOnline: Timestamp.fromDate(new Date()),
+      });
+    }
   } catch (e) {
     console.log(e);
   }

@@ -32,12 +32,13 @@ export default function ListUser({ selectedUser, chatView }) {
       </IonAvatar>
       <IonLabel>
         <h2>
-          {`${selectedUser.firstName} ${selectedUser.lastName}`} {selectedUser.isOnline ? "Online" : "Offline"}
+          {`${selectedUser.firstName} ${selectedUser.lastName}`}{" "}
+          {selectedUser.isOnline === "online" ? "🟢" : "🔴"}
         </h2>
         <p>
           <small>{selectedUser.email}</small>
         </p>
-        {!selectedUser.isOnline && selectedUser.lastOnline && (
+        {selectedUser.isOnline === "offline" && selectedUser.lastOnline && (
           <p>
             Last online: {lastOnlineTime} {lastOnlineMessage}
           </p>
