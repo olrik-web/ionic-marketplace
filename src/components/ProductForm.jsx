@@ -50,6 +50,7 @@ export default function PostForm({ post, handleSubmit }) {
       price: price,
       size: size,
       category: category,
+      id: post ? post.id : null,
     };
     handleSubmit(formData);
   }

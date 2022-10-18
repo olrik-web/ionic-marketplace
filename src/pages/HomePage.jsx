@@ -21,20 +21,18 @@ export default function HomePage() {
 
   console.log(posts);
 
-  useEffect(() => {
-    async function fetchPost() {
-      const postResult = await getPosts();
-      if (postResult.status === 200 && postResult.posts) {
-        setPosts(postResult.posts);
-      }
+  async function fetchPost() {
+    const postResult = await getPosts();
+    if (postResult.status === 200 && postResult.posts) {
+      setPosts(postResult.posts);
     }
-    fetchPost();
-  }, []);
+  }
 
   useIonViewWillEnter(() => {
     // Show the tabbar again which is hidden on login/signup page
     showTabBar();
     getCurrentUser();
+    fetchPost();
   });
 
   // Getting info about the user which is currently logged in
@@ -69,7 +67,11 @@ export default function HomePage() {
         <IonList>
           <div className="ionCard-item">
             {posts.map((post) => (
-              <ProductListItem product={post} key={post.uid} />
+              <ProductListItem
+                product={post}
+                key={post.id}
+                reload={fetchPost}
+              />
             ))}
           </div>
         </IonList>

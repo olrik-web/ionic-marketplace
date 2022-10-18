@@ -1,10 +1,20 @@
-import { IonAvatar, IonCard, IonImg, IonItem, IonLabel, IonTextarea, useIonActionSheet, useIonAlert } from "@ionic/react";
+import {
+  IonAvatar,
+  IonCard,
+  IonImg,
+  IonItem,
+  IonLabel,
+  IonTextarea,
+  useIonActionSheet,
+  useIonAlert,
+} from "@ionic/react";
 import { useEffect, useState } from "react";
 import { auth } from "../util/firebase";
 import { timeConverter } from "../util/helperMethods";
 
 export default function ChatMessage({ message, otherUser, handleDelete }) {
-  const defaultImg = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png";
+  const defaultImg =
+    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png";
   const currentUser = auth.currentUser.uid;
   const [messageTimeText, setMessageTimeText] = useState();
   const [presentActionSheet] = useIonActionSheet();
@@ -33,7 +43,10 @@ export default function ChatMessage({ message, otherUser, handleDelete }) {
     presentDeleteDialog({
       header: "Delete Post",
       message: "Do you want to delete this post?",
-      buttons: [{ text: "No" }, { text: "Yes", role: "destructive", handler: handleDelete }],
+      buttons: [
+        { text: "No" },
+        { text: "Yes", role: "destructive", handler: handleDelete },
+      ],
     });
   }
 
@@ -53,8 +66,18 @@ export default function ChatMessage({ message, otherUser, handleDelete }) {
           </IonItem>
           <IonItem lines="none" onClick={showActionSheet}>
             <IonCard slot="end" color="primary" className="chatMessageCard">
-              <IonTextarea value={message.text} autoGrow={true} readonly={true} />
-              {message.image && <IonImg className="chatMessageImage" src={message.image} alt={message.text} />}
+              <IonTextarea
+                value={message.text}
+                autoGrow={true}
+                readonly={true}
+              />
+              {message.image && (
+                <IonImg
+                  className="chatMessageImage"
+                  src={message.image}
+                  alt={message.text}
+                />
+              )}
             </IonCard>
           </IonItem>
         </>
@@ -72,8 +95,18 @@ export default function ChatMessage({ message, otherUser, handleDelete }) {
           </IonItem>
           <IonItem lines="none">
             <IonCard color="light" className="chatMessageCard">
-              <IonTextarea value={message.text} autoGrow={true} readonly={true} />
-              {message.image && <IonImg className="chatMessageImage" src={message.image} alt={message.text} />}
+              <IonTextarea
+                value={message.text}
+                autoGrow={true}
+                readonly={true}
+              />
+              {message.image && (
+                <IonImg
+                  className="chatMessageImage"
+                  src={message.image}
+                  alt={message.text}
+                />
+              )}
             </IonCard>
           </IonItem>
         </>
