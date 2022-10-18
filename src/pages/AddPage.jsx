@@ -1,15 +1,11 @@
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 import ProductForm from "../components/ProductForm";
 import { Toast } from "@capacitor/toast";
 import { createPost } from "../util/post.server";
+import { useHistory } from "react-router";
 
-const AddPage = () => {
+export default function AddPage() {
+  const history = useHistory();
   async function handleSubmit(newPost) {
     const postResult = await createPost(newPost);
 
@@ -18,6 +14,10 @@ const AddPage = () => {
       position: "center",
       duration: "long",
     });
+    // redirect to home page after successful post.
+    if (postResult?.status === 200) {
+      history.push("/home");
+    }
   }
   return (
     <IonPage>
@@ -36,6 +36,4 @@ const AddPage = () => {
       </IonContent>
     </IonPage>
   );
-};
-
-export default AddPage;
+}

@@ -18,6 +18,7 @@ import ProductListItem from "../components/PostCard";
 export default function HomePage() {
   const [currentUser, setCurrentUser] = useState({});
   const [posts, setPosts] = useState([]);
+  console.log(currentUser);
 
   useEffect(() => {
     async function fetchPost() {
@@ -43,8 +44,8 @@ export default function HomePage() {
       if (userResult.status === 200 && userResult.data) {
         setCurrentUser(userResult.data);
         // Updating the status so we appear logged in (online)
-        if (!currentUser.isOnline) {
-          await updateUserStatus();
+        if (currentUser.isOnline === "offline") {
+          await updateUserStatus(true);
         }
       }
     }
