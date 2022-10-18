@@ -93,4 +93,4 @@ export default function ProductListItem({ product, reload }) {
       </IonCardContent>
     </IonCard>
   );
-}
+} 

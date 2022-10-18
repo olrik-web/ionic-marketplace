@@ -2,8 +2,10 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  updateEmail,
+  updatePassword,
 } from "firebase/auth";
-import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc, Timestamp, updateDoc } from "firebase/firestore";
 import { auth, db } from "./firebase";
 
 const COLLECTION_USERS = "users";
@@ -12,11 +14,7 @@ export async function createUser(newUser) {
   let result;
   try {
     // Create user in Firebase Authentication
-    const response = await createUserWithEmailAndPassword(
-      auth,
-      newUser.email,
-      newUser.password
-    );
+    const response = await createUserWithEmailAndPassword(auth, newUser.email, newUser.password);
 
     // Save user to Firebase Cloud Firestore in the users collection.
     await setDoc(doc(db, COLLECTION_USERS, response.user.uid), {
@@ -47,15 +45,11 @@ export async function signIn(user) {
   let result;
   try {
     // TODO: Implement other means of sign in? E.g. google, facebook and such
-    const response = await signInWithEmailAndPassword(
-      auth,
-      user.email,
-      user.password
-    );
+    const response = await signInWithEmailAndPassword(auth, user.email, user.password);
     localStorage.setItem("userIsAuthenticated", "true");
     // Update status of user so the user appears online when logged in.
     await updateDoc(doc(db, COLLECTION_USERS, response.user.uid), {
-      isOnline: true,
+      isOnline: "online",
     });
 
     // Response is good.
@@ -82,7 +76,7 @@ export async function signOutUser() {
   try {
     await updateDoc(doc(db, COLLECTION_USERS, auth.currentUser.uid), {
       lastOnline: Timestamp.fromDate(new Date()),
-      isOnline: false,
+      isOnline: "offline",
     });
     localStorage.removeItem("userIsAuthenticated");
 
@@ -95,11 +89,18 @@ export async function signOutUser() {
 /*
  * In this function we just update the user status to appear online
  */
-export async function updateUserStatus() {
+export async function updateUserStatus(status) {
   try {
-    await updateDoc(doc(db, COLLECTION_USERS, auth.currentUser.uid), {
-      isOnline: true,
-    });
+    if (status === "online") {
+      await updateDoc(doc(db, COLLECTION_USERS, auth.currentUser.uid), {
+        isOnline: "online",
+      });
+    } else {
+      await updateDoc(doc(db, COLLECTION_USERS, auth.currentUser.uid), {
+        isOnline: "offline",
+        lastOnline: Timestamp.fromDate(new Date()),
+      });
+    }
   } catch (e) {
     console.log(e);
   }
@@ -122,6 +123,49 @@ export async function getUser(uid) {
     }
   } catch (error) {
     console.log(error);
+    return { status: 400 };
+  }
+}
+
+// This function is called on the profile page to update the user information
+export async function updateUser(user, shouldUpdatePassword, shouldUpdateEmail) {
+  try {
+    // Update email and password in Firebase Authentication
+    if (shouldUpdatePassword) {
+      console.log("Updating password");
+      await updatePassword(auth.currentUser, user.password);
+    }
+    if (shouldUpdateEmail) {
+      console.log("Updating email");
+      await updateEmail(auth.currentUser, user.email);
+    }
+
+    await updateDoc(doc(db, COLLECTION_USERS, auth.currentUser.uid), {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+    });
+
+    console.log("User updated successfully");
+
+    return { status: 200 };
+  } catch (e) {
+    console.log(e);
+    return { status: 400 };
+  }
+}
+
+// get all users
+export async function getAllUsers() {
+  try {
+    const querySnapshot = await getDocs(collection(db, COLLECTION_USERS));
+    const users = [];
+    querySnapshot.forEach((doc) => {
+      users.push(doc.data());
+    });
+    return { data: users, status: 200 };
+  } catch (e) {
+    console.log(e);
     return { status: 400 };
   }
 }

@@ -8,7 +8,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { newspaper } from "ionicons/icons";
-import { db } from "./firebase";
+import { db, auth } from "./firebase";
 
 const COLLECTION_POSTS = "posts";
 
@@ -20,6 +20,7 @@ export async function createPost(newPost) {
       ...newPost,
       createdAt: Timestamp.fromDate(new Date()),
       updatedAt: Timestamp.fromDate(new Date()),
+      createdBy: auth.currentUser.uid,
     });
 
     result = {
@@ -55,13 +56,40 @@ export async function getPosts() {
   return result;
 }
 
-// delte post
-
-export async function deletePost(id) {
+// get posts by user id (createdBy) and return them.
+export async function getPostsCurrentUser() {
   let result;
-
   try {
-    await deleteDoc(doc(db, COLLECTION_POSTS, id));
+    const snapshot = await getDocs(collection(db, COLLECTION_POSTS));
+    // filter posts by user id (createdBy) and return them with post (document) id.
+    // TODO: add pagination. (limit, offset)
+    // TODO: Change uid to id
+    const posts = snapshot.docs
+      .map((doc) => {
+        return { ...doc.data(), id: doc.id };
+      })
+      .filter((post) => post.createdBy === auth.currentUser.uid);
+
+    result = {
+      message: "Posts were fetched succesfully.",
+      status: 200,
+      posts: posts,
+    };
+  } catch (e) {
+    console.log(e);
+    result = {
+      message: "Something went wrong trying to get posts.",
+      status: 400,
+    };
+  }
+  return result;
+}
+
+// Delete a post from the database by its id.
+export async function deletePost(postId) {
+  let result;
+  try {
+    await deleteDoc(doc(db, COLLECTION_POSTS, postId));
     result = {
       message: "Post was deleted succesfully.",
       status: 200,
