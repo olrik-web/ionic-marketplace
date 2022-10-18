@@ -42,6 +42,7 @@ import "./theme/variables.css";
 import "./theme/app.css";
 import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { signOutUser } from "./util/user.server";
 
 setupIonicReact();
 
@@ -105,10 +106,13 @@ function PublicRoutes() {
 }
 
 const App: React.FC = () => {
-  const [userIsAuthenticated, setUserIsAuthenticated] = useState(
-    localStorage.getItem("userIsAuthenticated")
-  );
+  const [userIsAuthenticated, setUserIsAuthenticated] = useState(localStorage.getItem("userIsAuthenticated"));
   const auth = getAuth();
+
+  // We call the sign out user function when the user closes the application, so the user is set to offline
+  window.addEventListener("beforeunload", () => {
+    signOutUser();
+  });
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -130,13 +134,7 @@ const App: React.FC = () => {
     <IonApp>
       <IonReactRouter>
         {userIsAuthenticated === "true" ? <PrivateRoutes /> : <PublicRoutes />}
-        <Route>
-          {userIsAuthenticated === "true" ? (
-            <Redirect to="/home" />
-          ) : (
-            <Redirect to="/login" />
-          )}
-        </Route>
+        <Route>{userIsAuthenticated === "true" ? <Redirect to="/home" /> : <Redirect to="/login" />}</Route>
       </IonReactRouter>
     </IonApp>
   );
