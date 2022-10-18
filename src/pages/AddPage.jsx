@@ -11,8 +11,6 @@ import { createPost } from "../util/post.server";
 
 const AddPage = () => {
   async function handleSubmit(newPost) {
-    // TODO: Create a new post
-
     const postResult = await createPost(newPost);
 
     await Toast.show({

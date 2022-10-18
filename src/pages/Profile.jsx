@@ -5,7 +5,9 @@ import {
   IonInput,
   IonItem,
   IonLabel,
+  IonList,
   IonPage,
+  IonText,
   IonTitle,
   IonToolbar,
   useIonViewWillEnter,
@@ -17,6 +19,8 @@ import { useState } from "react";
 import { auth } from "../util/firebase";
 import { Toast } from "@capacitor/toast";
 import { EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
+import { getPostsCurrentUser } from "../util/post.server";
+import ProductListItem from "../components/PostCard";
 
 export default function Profile() {
   const history = useHistory();
@@ -27,9 +31,11 @@ export default function Profile() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [currentEmail, setCurrentEmail] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
+  const [posts, setPosts] = useState([]);
 
   useIonViewWillEnter(() => {
     getCurrentUser();
+    getPosts();
   });
 
   // Getting info about the user which is currently logged in
@@ -42,6 +48,24 @@ export default function Profile() {
         setFirstName(userResult.data.firstName);
         setLastName(userResult.data.lastName);
         setCurrentEmail(userResult.data.email);
+      }
+    }
+  }
+
+  // Getting the user's posts from the database
+  async function getPosts() {
+    if (auth.currentUser) {
+      const postsResult = await getPostsCurrentUser(auth.currentUser.uid);
+      // If response is good we set state with the data
+      if (postsResult.status === 200 && postsResult.posts) {
+        setPosts(postsResult.posts);
+      } else {
+        // Show error message if something went wrong.
+        await Toast.show({
+          text: postsResult.message,
+          position: "center",
+          duration: "long",
+        });
       }
     }
   }
@@ -207,16 +231,16 @@ export default function Profile() {
             <IonInput
               type="password"
               value={newPassword}
-              placeholder="Type your password"
+              placeholder="Type your new password"
               onIonChange={(e) => setNewPassword(e.target.value)}
             />
           </IonItem>
           <IonItem>
-            <IonLabel position="stacked">Confirm password</IonLabel>
+            <IonLabel position="stacked">Confirm new password</IonLabel>
             <IonInput
               type="password"
               value={confirmPassword}
-              placeholder="Type your password again"
+              placeholder="Type your new password again"
               onIonChange={(e) => setConfirmPassword(e.target.value)}
             />
           </IonItem>
@@ -224,6 +248,16 @@ export default function Profile() {
             Update profile
           </IonButton>
         </form>
+        <IonItem position="stacked">
+          <IonLabel>
+            <h1>Your posts</h1>
+          </IonLabel>
+        </IonItem>
+        <IonList>
+          {posts.map((post) => (
+            <ProductListItem key={post.uid} product={post} />
+          ))}
+        </IonList>
         <IonButton type="button" expand="block" onClick={handleSignOut}>
           Sign out
         </IonButton>

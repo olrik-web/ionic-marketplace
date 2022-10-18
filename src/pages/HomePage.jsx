@@ -19,8 +19,6 @@ export default function HomePage() {
   const [currentUser, setCurrentUser] = useState({});
   const [posts, setPosts] = useState([]);
 
-  console.log(posts);
-
   useEffect(() => {
     async function fetchPost() {
       const postResult = await getPosts();
