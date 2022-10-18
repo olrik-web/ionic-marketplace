@@ -1,5 +1,11 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateEmail, updatePassword } from "firebase/auth";
-import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  updateEmail,
+  updatePassword,
+} from "firebase/auth";
+import { collection, doc, getDoc, getDocs, setDoc, Timestamp, updateDoc } from "firebase/firestore";
 import { auth, db } from "./firebase";
 
 const COLLECTION_USERS = "users";
@@ -133,10 +139,24 @@ export async function updateUser(user, shouldUpdatePassword, shouldUpdateEmail) 
       email: user.email,
     });
 
-        console.log("User updated successfully");
-
+    console.log("User updated successfully");
 
     return { status: 200 };
+  } catch (e) {
+    console.log(e);
+    return { status: 400 };
+  }
+}
+
+// get all users
+export async function getAllUsers() {
+  try {
+    const querySnapshot = await getDocs(collection(db, COLLECTION_USERS));
+    const users = [];
+    querySnapshot.forEach((doc) => {
+      users.push(doc.data());
+    });
+    return { data: users, status: 200 };
   } catch (e) {
     console.log(e);
     return { status: 400 };
