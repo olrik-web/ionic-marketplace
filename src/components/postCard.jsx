@@ -8,8 +8,8 @@ import {
   IonCardTitle,
   IonIcon,
 } from "@ionic/react";
-import "./ProductListItem.css";
-import { pin, bookmark, wine, warning, walk } from "ionicons/icons";
+import "./PostCard.css";
+import { bookmark } from "ionicons/icons";
 
 export default function ProductListItem({ product }) {
   return (
@@ -21,10 +21,10 @@ export default function ProductListItem({ product }) {
     >
       <IonImg className="product-img" src={product.image} />
       <IonCardHeader>
+        <IonCardTitle className="product-title">{product.title}</IonCardTitle>
         <IonCardSubtitle className="product-price">
           {product.price} kr
         </IonCardSubtitle>
-        <IonCardTitle className="product-title">{product.title}</IonCardTitle>
       </IonCardHeader>
       <IonCardContent className="ionCard-content">
         <p className="product-size">Størrelse: {product.size} </p>
@@ -33,4 +33,4 @@ export default function ProductListItem({ product }) {
       </IonCardContent>
     </IonCard>
   );
-}
+} 

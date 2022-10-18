@@ -1,18 +1,19 @@
 import {
   IonContent,
   IonHeader,
+  IonList,
   IonPage,
   IonTitle,
   IonToolbar,
   useIonViewWillEnter,
 } from "@ionic/react";
-import { useContext, useEffect, useState } from "react";
-import { Redirect } from "react-router";
+import { useEffect, useState } from "react";
 import ExploreContainer from "../components/ExploreContainer";
 import { auth } from "../util/firebase";
 import { showTabBar } from "../util/helperMethods";
 import { getUser, updateUserStatus } from "../util/user.server";
 import { getPosts } from "../util/post.server";
+import ProductListItem from "../components/PostCard";
 
 export default function HomePage() {
   const [currentUser, setCurrentUser] = useState({});
@@ -65,6 +66,13 @@ export default function HomePage() {
           </IonToolbar>
         </IonHeader>
         <ExploreContainer name="Home page" />
+        <IonList>
+          <div className="ionCard-item">
+            {posts.map((post) => (
+              <ProductListItem product={post} key={post.uid} />
+            ))}
+          </div>
+        </IonList>
       </IonContent>
     </IonPage>
   );

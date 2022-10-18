@@ -10,7 +10,7 @@ import {
   setupIonicReact,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { home, searchOutline, person, chatbox } from "ionicons/icons";
+import { home, searchOutline, person, chatbox, add } from "ionicons/icons";
 import HomePage from "./pages/HomePage";
 import SearchPage from "./pages/SearchPage";
 import ProfilePage from "./pages/Profile";
@@ -18,6 +18,7 @@ import LoginPage from "./pages/LogInPage";
 import SignUpPage from "./pages/SignUpPage";
 import ChatsPage from "./pages/ChatsPage";
 import UserChatPage from "./pages/UserChatPage";
+import AddPage from "./pages/AddPage";
 // import { AuthContext } from "./context/auth";
 
 /* Core CSS required for Ionic components to work properly */
@@ -63,6 +64,9 @@ function PrivateRoutes() {
         <Route exact path="/profile">
           <ProfilePage />
         </Route>
+        <Route exact path="/add">
+          <AddPage />
+        </Route>
         <Redirect exact from="/" to="/home" />
       </IonRouterOutlet>
       <IonTabBar slot="bottom">
@@ -73,6 +77,10 @@ function PrivateRoutes() {
         <IonTabButton tab="chats" href="/chats">
           <IonIcon icon={chatbox} />
           <IonLabel>Chats</IonLabel>
+        </IonTabButton>
+        <IonTabButton tab="add" href="/add">
+          <IonIcon icon={add} />
+          <IonLabel>Add</IonLabel>
         </IonTabButton>
         <IonTabButton tab="search" href="/search">
           <IonIcon icon={searchOutline} />
@@ -97,7 +105,9 @@ function PublicRoutes() {
 }
 
 const App: React.FC = () => {
-  const [userIsAuthenticated, setUserIsAuthenticated] = useState(localStorage.getItem("userIsAuthenticated"));
+  const [userIsAuthenticated, setUserIsAuthenticated] = useState(
+    localStorage.getItem("userIsAuthenticated")
+  );
   const auth = getAuth();
 
   useEffect(() => {
@@ -114,13 +124,19 @@ const App: React.FC = () => {
     });
   }, [auth]);
 
-    console.log("is user authenticated? " + userIsAuthenticated);
+  console.log("is user authenticated? " + userIsAuthenticated);
 
   return (
     <IonApp>
       <IonReactRouter>
         {userIsAuthenticated === "true" ? <PrivateRoutes /> : <PublicRoutes />}
-        <Route>{userIsAuthenticated === "true" ? <Redirect to="/home" /> : <Redirect to="/login" />}</Route>
+        <Route>
+          {userIsAuthenticated === "true" ? (
+            <Redirect to="/home" />
+          ) : (
+            <Redirect to="/login" />
+          )}
+        </Route>
       </IonReactRouter>
     </IonApp>
   );
