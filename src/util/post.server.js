@@ -1,10 +1,4 @@
-import {
-  addDoc,
-  doc,
-  getDocs,
-  collection,
-  Timestamp,
-} from "firebase/firestore";
+import { setDoc, addDoc, doc, getDocs, collection, Timestamp, deleteDoc } from "firebase/firestore";
 import { newspaper } from "ionicons/icons";
 import { db } from "./firebase";
 
@@ -47,6 +41,25 @@ export async function getPosts() {
     console.log(e);
     result = {
       message: "Something went wrong trying to get posts.",
+      status: 400,
+    };
+  }
+  return result;
+}
+
+// Delete a post from the database by its id.
+export async function deletePost(postId) {
+  let result;
+  try {
+    await deleteDoc(doc(db, COLLECTION_POSTS, postId));
+    result = {
+      message: "Post was deleted succesfully.",
+      status: 200,
+    };
+  } catch (e) {
+    console.log(e);
+    result = {
+      message: "Something went wrong trying to delete a post.",
       status: 400,
     };
   }
