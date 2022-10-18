@@ -23,9 +23,10 @@ export default function Profile() {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [currentEmail, setCurrentEmail] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
 
   useIonViewWillEnter(() => {
     getCurrentUser();
@@ -73,14 +74,14 @@ export default function Profile() {
     let shouldUpdateEmail = false;
 
     // If the user has entered a password, we need to update it
-    if (password !== "" && confirmPassword !== "") {
-      if (password.length < 6) {
+    if (newPassword !== "" && confirmPassword !== "") {
+      if (newPassword.length < 6) {
         await Toast.show({
           text: "Password must be at least 6 characters long",
           duration: "long",
         });
         return;
-      } else if (password !== confirmPassword) {
+      } else if (newPassword !== confirmPassword) {
         await Toast.show({
           text: "Passwords do not match",
           duration: "long",
@@ -115,27 +116,14 @@ export default function Profile() {
         email,
         firstName,
         lastName,
-        password,
+        password: newPassword,
       };
 
       // If the user has changed their email or password, we need to reauthenticate them
       if (shouldUpdateEmail || shouldUpdatePassword) {
-        // Open a dialog asking for their login credentials
-        const { value } = await Dialog.prompt({
-          title: "Reauthenticate",
-          message: "Please enter your current password",
-          inputPlaceholder: "Password",
-          okButtonTitle: "Confirm",
-          cancelButtonTitle: "Cancel",
-        });
-
-        // If they press cancel, we return
-        if (!value) {
-          return;
-        }
         try {
           // Create a credential with the current email and password
-          const credential = EmailAuthProvider.credential(auth.currentUser.email, value);
+          const credential = EmailAuthProvider.credential(auth.currentUser.email, currentPassword);
           // Reauthenticate the user
           await reauthenticateWithCredential(auth.currentUser, credential);
         } catch (error) {
@@ -156,7 +144,7 @@ export default function Profile() {
           position: "center",
           duration: "short",
         });
-        setPassword("");
+        setNewPassword("");
         setConfirmPassword("");
         // And we redirect the user to the home page
         history.push("/home");
@@ -206,12 +194,21 @@ export default function Profile() {
             <IonInput value={email} placeholder="Type your email" onIonChange={(e) => setEmail(e.target.value)} />
           </IonItem>
           <IonItem>
-            <IonLabel position="stacked">Password</IonLabel>
+            <IonLabel position="stacked">Current password</IonLabel>
             <IonInput
               type="password"
-              value={password}
+              value={currentPassword}
+              placeholder="Type your current password"
+              onIonChange={(e) => setCurrentPassword(e.target.value)}
+            />
+          </IonItem>
+          <IonItem>
+            <IonLabel position="stacked">New password</IonLabel>
+            <IonInput
+              type="password"
+              value={newPassword}
               placeholder="Type your password"
-              onIonChange={(e) => setPassword(e.target.value)}
+              onIonChange={(e) => setNewPassword(e.target.value)}
             />
           </IonItem>
           <IonItem>
