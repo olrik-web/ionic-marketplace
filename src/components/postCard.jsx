@@ -10,6 +10,7 @@ import {
 import "./PostCard.css";
 import { bookmark } from "ionicons/icons";
 import PostActions from "./PostAction";
+import Favorite from './Favorite';
 
 export default function ProductListItem({ product, reload }) {
   return (
@@ -31,7 +32,7 @@ export default function ProductListItem({ product, reload }) {
         <p className="product-size">{product?.size ? product.size : ""} </p>
         <p className=""> {product?.category ? product.category : ""}</p>
         <p className="product-location">Aarhus</p>
-        <IonIcon icon={bookmark} slot="end" className="bookmark" />
+        <Favorite product={product}/>
       </IonCardContent>
     </IonCard>
   );
