@@ -14,8 +14,6 @@ export default function SignUpPage() {
   let history = useHistory();
 
   async function handleSubmit(newUser) {
-    //TODO: Do we need to call prevent default here???
-
     // Creating the user with the form data as parameter
     const result = await createUser(newUser);
 
