@@ -33,6 +33,7 @@ export default function ProductListItem({ product, reload, currentUser }) {
       }
     }
   }
+import Favorite from './Favorite';
 
   return (
     <IonCard className="ionCard" button key={product.id} routerLink={`products/${product.id}`}>
@@ -50,6 +51,10 @@ export default function ProductListItem({ product, reload, currentUser }) {
           </p>
         )}
         <IonIcon icon={bookmark} slot="end" className="bookmark" />
+        <p className="product-size">{product?.size ? product.size : ""} </p>
+        <p className=""> {product?.category ? product.category : ""}</p>
+        <p className="product-location">Aarhus</p>
+        <Favorite product={product}/>
       </IonCardContent>
     </IonCard>
   );
