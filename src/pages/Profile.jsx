@@ -7,7 +7,6 @@ import {
   IonLabel,
   IonList,
   IonPage,
-  IonText,
   IonTitle,
   IonToolbar,
   useIonViewWillEnter,
@@ -21,6 +20,9 @@ import { Toast } from "@capacitor/toast";
 import { EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 import { getPostsCurrentUser } from "../util/post.server";
 import ProductListItem from "../components/PostCard";
+import { getLocationCity, updateLocation } from "../util/location.server";
+import { Geolocation } from "@capacitor/geolocation";
+import { Capacitor } from "@capacitor/core";
 
 export default function Profile() {
   const history = useHistory();
@@ -32,10 +34,15 @@ export default function Profile() {
   const [currentEmail, setCurrentEmail] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [posts, setPosts] = useState([]);
+  const [city, setCity] = useState("");
+  const [latitude, setLatitude] = useState();
+  const [longitude, setLongitude] = useState();
 
   useIonViewWillEnter(() => {
     getCurrentUser();
     getPosts();
+    // Getting the location of the device.
+    setCurrentPosition();
   });
 
   // Getting info about the user which is currently logged in
@@ -48,6 +55,7 @@ export default function Profile() {
         setFirstName(userResult.data.firstName);
         setLastName(userResult.data.lastName);
         setCurrentEmail(userResult.data.email);
+        setCity(userResult.data.city);
       }
     }
   }
@@ -151,7 +159,6 @@ export default function Profile() {
           // Reauthenticate the user
           await reauthenticateWithCredential(auth.currentUser, credential);
         } catch (error) {
-          console.log(error);
           await Toast.show({
             text: "Incorrect password",
           });
@@ -180,6 +187,72 @@ export default function Profile() {
           duration: "short",
         });
       }
+    }
+  }
+
+  async function setCurrentPosition() {
+    // If the device is ios or android we ask for permission to get the location.
+    if (Capacitor.isNativePlatform()) {
+      const hasPermission = await Geolocation.checkPermissions();
+      if (
+        hasPermission.coarseLocation.toLowerCase() === "granted" ||
+        hasPermission.location.toLowerCase() === "granted"
+      ) {
+        // If they have, get the current position
+        const locationData = await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
+        setLatitude(locationData.coords.latitude);
+        setLongitude(locationData.coords.longitude);
+      } else {
+        // If they haven't, ask for permission
+        const permission = await Geolocation.requestPermissions();
+        if (permission.coarseLocation.toLowerCase() === "granted" || permission.location.toLowerCase() === "granted") {
+          // If they grant permission, get the current position
+          const locationData = await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
+          setLatitude(locationData.coords.latitude);
+          setLongitude(locationData.coords.longitude);
+        }
+      }
+    } else {
+      // If the device is a web browser, we get the location
+      const locationData = await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
+      setLatitude(locationData.coords.latitude);
+      setLongitude(locationData.coords.longitude);
+    }
+  }
+
+  async function changeLocation() {
+    if (latitude && longitude && latitude !== 0 && longitude !== 0) {
+      const locationData = await getLocationCity(latitude, longitude);
+      if (locationData.status === 200) {
+        // Update location in database
+        const locationResult = await updateLocation(locationData.locality, latitude, longitude);
+        if (locationResult.status === 200) {
+          setCity(locationData.locality);
+          await Toast.show({
+            text: "Location changed to " + locationData.locality,
+            position: "center",
+            duration: "short",
+          });
+        } else {
+          await Toast.show({
+            text: locationResult.message,
+            position: "center",
+            duration: "short",
+          });
+        }
+      } else {
+        await Toast.show({
+          text: locationData.message,
+          position: "center",
+          duration: "short",
+        });
+      }
+    } else {
+      await Toast.show({
+        text: "Please enable location services",
+        position: "center",
+        duration: "short",
+      });
     }
   }
 
@@ -218,6 +291,14 @@ export default function Profile() {
             <IonInput value={email} placeholder="Type your email" onIonChange={(e) => setEmail(e.target.value)} />
           </IonItem>
           <IonItem>
+            <IonButton type="button" onClick={changeLocation} fill="outline" slot="end">
+              Update location
+            </IonButton>
+            <IonLabel position="stacked">City</IonLabel>
+            <IonInput value={city} readonly />
+          </IonItem>
+
+          <IonItem>
             <IonLabel position="stacked">Current password</IonLabel>
             <IonInput
               type="password"
@@ -255,7 +336,7 @@ export default function Profile() {
         </IonItem>
         <IonList>
           {posts.map((post) => (
-            <ProductListItem key={post.uid} product={post} />
+            <ProductListItem key={post.id} product={post} />
           ))}
         </IonList>
         <IonButton type="button" expand="block" onClick={handleSignOut}>

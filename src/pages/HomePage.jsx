@@ -18,7 +18,6 @@ import ProductListItem from "../components/PostCard";
 export default function HomePage() {
   const [currentUser, setCurrentUser] = useState({});
   const [posts, setPosts] = useState([]);
-  console.log(currentUser);
 
   async function fetchPost() {
     const postResult = await getPosts();
@@ -66,11 +65,7 @@ export default function HomePage() {
         <IonList>
           <div className="ionCard-item">
             {posts.map((post) => (
-              <ProductListItem
-                product={post}
-                key={post.id}
-                reload={fetchPost}
-              />
+              <ProductListItem product={post} key={post.id} reload={fetchPost} currentUser={currentUser} />
             ))}
           </div>
         </IonList>

@@ -21,23 +21,16 @@ export default function LogInPage() {
   });
 
   async function handleSubmit(user) {
-    // TODO: Do we need to call Prevent default???
     const result = await signIn(user);
 
     if (result.status === 200) {
       history.push("/home");
-      await Toast.show({
-        text: result.message,
-        position: "center",
-        duration: "short",
-      });
-    } else {
-      await Toast.show({
-        text: result.message,
-        position: "center",
-        duration: "short",
-      });
-    }
+    } 
+    await Toast.show({
+      text: result.message,
+      position: "center",
+      duration: "short",
+    });
   }
 
   return (

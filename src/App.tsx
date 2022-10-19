@@ -21,6 +21,10 @@ import UserChatPage from "./pages/UserChatPage";
 import AddPage from "./pages/AddPage";
 import { App } from "@capacitor/app";
 
+import { useEffect, useState } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { signOutUser, updateUserStatus } from "./util/user.server";
+
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
 
@@ -40,9 +44,6 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 import "./theme/app.css";
-import { useEffect, useState } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { signOutUser, updateUserStatus } from "./util/user.server";
 
 setupIonicReact();
 
@@ -109,18 +110,20 @@ const IonicApp: React.FC = () => {
   const [userIsAuthenticated, setUserIsAuthenticated] = useState(localStorage.getItem("userIsAuthenticated"));
   const auth = getAuth();
 
-  // We call the sign out user function when the user closes the application, so the user is set to offline
-  window.addEventListener("beforeunload", () => {
-    signOutUser();
-  });
+  if (auth?.currentUser?.uid) {
+    // We call the sign out user function when the user closes the application, so the user is set to offline
+    window.addEventListener("beforeunload", () => {
+      signOutUser();
+    });
 
-  App.addListener("appStateChange", ({ isActive }) => {
-    if (!isActive) {
-      updateUserStatus("offline");
-    } else {
-      updateUserStatus("online");
-    }
-  });
+    App.addListener("appStateChange", ({ isActive }) => {
+      if (!isActive) {
+        updateUserStatus("offline");
+      } else {
+        updateUserStatus("online");
+      }
+    });
+  }
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -135,8 +138,6 @@ const IonicApp: React.FC = () => {
       }
     });
   }, [auth]);
-
-  console.log("is user authenticated? " + userIsAuthenticated);
 
   return (
     <IonApp>
