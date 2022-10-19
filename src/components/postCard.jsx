@@ -28,10 +28,11 @@ export default function ProductListItem({ product, reload }) {
       </IonCardHeader>
       <PostActions post={product} reload={reload} />
       <IonCardContent className="ionCard-content">
-        <p className="product-size">Størrelse: {product.size} </p>
+        <p className="product-size">{product?.size ? product.size : ""} </p>
+        <p className=""> {product?.category ? product.category : ""}</p>
         <p className="product-location">Aarhus</p>
         <IonIcon icon={bookmark} slot="end" className="bookmark" />
       </IonCardContent>
     </IonCard>
   );
-} 
+}

@@ -8,6 +8,7 @@ import {
   IonIcon,
   IonSelect,
   IonSelectOption,
+  IonNote,
 } from "@ionic/react";
 import { useState, useEffect } from "react";
 import { Camera, CameraResultType } from "@capacitor/camera";
@@ -25,6 +26,11 @@ export default function PostForm({ post, handleSubmit }) {
   const [size, setSize] = useState("");
   const [category, setCategory] = useState("");
 
+  // error validation
+  const [titleError, setTitleError] = useState("");
+  const [descriptionError, setDescriptionError] = useState("");
+  const [priceError, setPriceError] = useState("");
+
   const fallbackUrl =
     "https://media.istockphoto.com/photos/white-paper-texture-background-picture-id1293996796?b=1&k=20&m=1293996796&s=170667a&w=0&h=ot-Q4dcJynVUxQyjU5P7i4qPZxmoWmPC0M09R53D8j8=";
 
@@ -41,20 +47,25 @@ export default function PostForm({ post, handleSubmit }) {
 
   function submitEvent(event) {
     event.preventDefault();
+    const validationSuccess = handleValidation();
     setCurrentPosition();
 
-    const formData = {
-      title: title,
-      description: description,
-      image: imageElement ? imageElement : fallbackUrl,
-      latitude: latitude ? latitude : 0,
-      longitude: longitude ? longitude : 0,
-      price: price,
-      size: size,
-      category: category,
-      id: post ? post.id : null,
-    };
-    handleSubmit(formData);
+    if (validationSuccess) {
+      const formData = {
+        title: title,
+        description: description,
+        image: imageElement ? imageElement : fallbackUrl,
+        latitude: latitude ? latitude : 0,
+        longitude: longitude ? longitude : 0,
+        price: price,
+        size: size,
+        category: category,
+        id: post ? post.id : null,
+      };
+      handleSubmit(formData);
+    } else {
+      console.log("Validation error!");
+    }
   }
 
   async function takePicture() {
@@ -77,6 +88,33 @@ export default function PostForm({ post, handleSubmit }) {
     setLongitude(locationData.coords.longitude);
   }
 
+  function handleValidation() {
+    let isValid = true;
+
+    if (title.length === 0) {
+      setTitleError("Title is required");
+      isValid = false;
+    } else {
+      setTitleError("");
+    }
+
+    if (description.length === 0) {
+      setDescriptionError("Description is required");
+      isValid = false;
+    } else {
+      setDescriptionError("");
+    }
+
+    if (price.length === 0) {
+      setPriceError("Price is required");
+      isValid = false;
+    } else {
+      setPriceError("");
+    }
+
+    return isValid;
+  }
+
   return (
     <form onSubmit={submitEvent}>
       <IonItem>
@@ -86,18 +124,32 @@ export default function PostForm({ post, handleSubmit }) {
           placeholder="Type the title of the post"
           onIonChange={(e) => setTitle(e.target.value)}
         />
+        <IonNote color="danger">{titleError}</IonNote>
       </IonItem>
       <IonItem>
         <IonLabel position="stacked">Price</IonLabel>
-        <IonInput value={price} placeholder="Give your item a price" onIonChange={(e) => setPrice(e.target.value)} />
+        <IonInput
+          value={price}
+          placeholder="Give your item a price"
+          onIonChange={(e) => setPrice(e.target.value)}
+        />
+        <IonNote color="danger">{priceError}</IonNote>
       </IonItem>
       <IonItem>
         <IonLabel position="stacked">Size</IonLabel>
-        <IonInput value={size} placeholder="What size is your item?" onIonChange={(e) => setSize(e.target.value)} />
+        <IonInput
+          value={size}
+          placeholder="What size is your item?"
+          onIonChange={(e) => setSize(e.target.value)}
+        />
       </IonItem>
       <IonItem>
         <IonLabel position="stacked">Category</IonLabel>
-        <IonSelect value={category} onIonChange={(e) => setCategory(e.target.value)} placeholder="Select a category">
+        <IonSelect
+          value={category}
+          onIonChange={(e) => setCategory(e.target.value)}
+          placeholder="Select a category"
+        >
           {categories.map((category) => (
             <IonSelectOption key={category} value={category}>
               {category}
@@ -106,12 +158,13 @@ export default function PostForm({ post, handleSubmit }) {
         </IonSelect>
       </IonItem>
       <IonItem>
-        <IonLabel position="stacked">Description</IonLabel>
+        <IonLabel position="stacked">Description </IonLabel>
         <IonTextarea
           value={description}
           placeholder="Give a description of the post"
           onIonChange={(e) => setDescription(e.target.value)}
         ></IonTextarea>
+        <IonNote color="danger">{descriptionError}</IonNote>
       </IonItem>
       <IonItem>
         <IonLabel position="stacked">Take a picture of your item</IonLabel>
