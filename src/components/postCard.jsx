@@ -5,56 +5,78 @@ import {
   IonCardContent,
   IonCardSubtitle,
   IonCardTitle,
-  IonIcon,
-  useIonViewWillEnter,
+  IonItem,
+  IonLabel,
+  IonList,
 } from "@ionic/react";
 import "./PostCard.css";
-import { bookmark } from "ionicons/icons";
+import Favorite from "./Favorite";
 import PostActions from "./PostAction";
 import DistanceBetween from "./DistanceBetween";
 import { getUser } from "../util/user.server";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function ProductListItem({ product, reload, currentUser }) {
+export default function ProductListItem({ product, reload, currentUser, detailView, profileView }) {
   const [seller, setSeller] = useState({});
 
-  useIonViewWillEnter(() => {
-    // Show the tabbar again which is hidden on login/signup page
-    getSeller();
-  });
-
-  // Getting info about the user which is currently logged in
-  async function getSeller() {
-    if (product.createdBy) {
-      const userResult = await getUser(product.createdBy);
-      // If response is good we set state with the data
-      if (userResult.status === 200 && userResult.data) {
-        setSeller(userResult.data);
+  useEffect(() => {
+    // Getting info about the user which is currently logged in
+    async function getSeller() {
+      if (product.createdBy) {
+        const userResult = await getUser(product.createdBy);
+        // If response is good we set state with the data
+        if (userResult.status === 200 && userResult.data) {
+          setSeller(userResult.data);
+        }
       }
     }
-  }
-import Favorite from './Favorite';
+
+    getSeller();
+  }, [product.createdBy]);
 
   return (
-    <IonCard className="ionCard" button key={product.id} routerLink={`products/${product.id}`}>
-      <IonImg className="product-img" src={product.image} />
+    <IonCard className="ionCard" routerLink={!detailView ? `products/${product.id}` : {}}>
+      <IonImg className={detailView ? "product-img-detail" : "product-img"} src={product.image} />
       <IonCardHeader>
-        <IonCardSubtitle className="product-price">{product.price} kr</IonCardSubtitle>
-        <IonCardTitle className="product-title">{product.title}</IonCardTitle>
+        <IonItem color="none" lines="none">
+          <IonCardSubtitle color={"primary"}>
+            <h1>{product.price} kr</h1>
+          </IonCardSubtitle>
+          <PostActions post={product} reload={reload} />
+        </IonItem>
+        <IonItem color="none" lines="none">
+          <IonCardTitle>{product.title}</IonCardTitle>
+        </IonItem>
       </IonCardHeader>
-      <PostActions post={product} reload={reload} />
-      <IonCardContent className="ionCard-content">
-        <p className="product-size">Størrelse: {product.size} </p>
-        {seller.location && seller.city && (
-          <p className="product-location">
-            {seller.city}, <DistanceBetween seller={seller} buyer={currentUser} /> km away
-          </p>
-        )}
-        <IonIcon icon={bookmark} slot="end" className="bookmark" />
-        <p className="product-size">{product?.size ? product.size : ""} </p>
-        <p className=""> {product?.category ? product.category : ""}</p>
-        <p className="product-location">Aarhus</p>
-        <Favorite product={product}/>
+
+      <IonCardContent>
+        <IonList>
+          {product?.size && (
+            <IonItem lines="none">
+              <IonLabel color={"medium"}>Size</IonLabel>
+              <p className="product-size">{product?.size} </p>
+            </IonItem>
+          )}
+
+          {product?.category && (
+            <IonItem lines="none">
+              <IonLabel color={"medium"}>Category</IonLabel>
+              {product?.category}
+            </IonItem>
+          )}
+
+          {seller.location && seller.city && !profileView && (
+            <IonItem lines="none">
+              <IonLabel color={"medium"}>Location</IonLabel>
+              <p className="product-location">
+                {seller.city}, <DistanceBetween seller={seller} buyer={currentUser} /> km away
+              </p>
+            </IonItem>
+          )}
+          <IonItem lines="none">
+            <Favorite product={product} />
+          </IonItem>
+        </IonList>
       </IonCardContent>
     </IonCard>
   );

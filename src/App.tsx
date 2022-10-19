@@ -44,6 +44,7 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 import "./theme/app.css";
+import ProductDetailsPage from "./pages/ProoductDetailsPage";
 
 setupIonicReact();
 
@@ -68,6 +69,9 @@ function PrivateRoutes() {
         </Route>
         <Route exact path="/add">
           <AddPage />
+        </Route>
+        <Route exact path="/products/:id">
+          <ProductDetailsPage />
         </Route>
         <Redirect exact from="/" to="/home" />
       </IonRouterOutlet>

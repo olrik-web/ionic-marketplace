@@ -329,16 +329,22 @@ export default function Profile() {
             Update profile
           </IonButton>
         </form>
-        <IonItem position="stacked">
-          <IonLabel>
-            <h1>Your posts</h1>
-          </IonLabel>
-        </IonItem>
-        <IonList>
-          {posts.map((post) => (
-            <ProductListItem key={post.id} product={post} />
-          ))}
-        </IonList>
+        {posts.length > 0 && (
+          <>
+            <IonItem position="stacked">
+              <IonLabel>
+                <h1>Your posts</h1>
+              </IonLabel>
+            </IonItem>
+            <IonList>
+              <div className="ionCard-grid">
+                {posts.map((post) => (
+                  <ProductListItem key={post.id} product={post} profileView={true} />
+                ))}
+              </div>
+            </IonList>
+          </>
+        )}
         <IonButton type="button" expand="block" onClick={handleSignOut}>
           Sign out
         </IonButton>

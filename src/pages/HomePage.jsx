@@ -1,14 +1,5 @@
-import {
-  IonContent,
-  IonHeader,
-  IonList,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  useIonViewWillEnter,
-} from "@ionic/react";
-import { useEffect, useState } from "react";
-import ExploreContainer from "../components/ExploreContainer";
+import { IonContent, IonHeader, IonList, IonPage, IonTitle, IonToolbar, useIonViewWillEnter } from "@ionic/react";
+import { useState } from "react";
 import { auth } from "../util/firebase";
 import { showTabBar } from "../util/helperMethods";
 import { getUser, updateUserStatus } from "../util/user.server";
@@ -19,19 +10,19 @@ export default function HomePage() {
   const [currentUser, setCurrentUser] = useState({});
   const [posts, setPosts] = useState([]);
 
-  async function fetchPost() {
-    const postResult = await getPosts();
-    if (postResult.status === 200 && postResult.posts) {
-      setPosts(postResult.posts);
-    }
-  }
-
   useIonViewWillEnter(() => {
     // Show the tabbar again which is hidden on login/signup page
     showTabBar();
     getCurrentUser();
     fetchPost();
   });
+
+  async function fetchPost() {
+    const postResult = await getPosts();
+    if (postResult.status === 200 && postResult.posts) {
+      setPosts(postResult.posts);
+    }
+  }
 
   // Getting info about the user which is currently logged in
   async function getCurrentUser() {
@@ -61,9 +52,8 @@ export default function HomePage() {
             <IonTitle size="large">Hi, {currentUser.firstName}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer name="Home page" />
         <IonList>
-          <div className="ionCard-item">
+          <div className="ionCard-grid">
             {posts.map((post) => (
               <ProductListItem product={post} key={post.id} reload={fetchPost} currentUser={currentUser} />
             ))}

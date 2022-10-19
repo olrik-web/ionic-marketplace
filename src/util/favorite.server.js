@@ -1,5 +1,5 @@
 import { db, auth } from "./firebase";
-import { addDoc, collection, getDocs, docs, doc, where, deleteDoc } from "firebase/firestore";
+import { addDoc, collection, getDocs, doc, where, deleteDoc, query } from "firebase/firestore";
 
 const COLLECTION_FAVORITES = "favorites";
 
@@ -25,23 +25,31 @@ export async function createFavorite(postId) {
   return result;
 }
 
+// Get all favorites based on the user id from the current logged in user
 export async function getFavorite(postId) {
-  let result;
+  let result = {
+    message: "Favorite not found.",
+    status: 400,
+  };
   try {
-    const snapshot = await getDocs(
-      collection(db, COLLECTION_FAVORITES),
-      where("postId", "==", postId),
-      where("userId", "==", auth.currentUser.uid)
-    );
-    result = {
-      message: "Favorites were fetched succesfully.",
-      status: 200,
-    favorites: snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })),
-    };
+   const q = query(collection(db, COLLECTION_FAVORITES), where("userId", "==", auth.currentUser.uid));
+
+   const querySnapshot = await getDocs(q);
+   querySnapshot.forEach((doc) => {
+     if(doc.data().postId === postId){
+        result = {
+          message: "Favorite was found.",
+          status: 200,
+          data: {...doc.data(), id: doc.id},
+        };
+        return;
+     }
+   });
+
   } catch (e) {
     console.log(e);
     result = {
-      message: "Something went wrong trying to get favorites.",
+      message: "Something went wrong trying to fetch favorites.",
       status: 400,
     };
   }
@@ -49,25 +57,25 @@ export async function getFavorite(postId) {
 }
 
 export async function deleteFavorite(postId) {
-    let result;
-    try {
-        const snapshot = await getDocs(
-        collection(db, COLLECTION_FAVORITES),
-        where("postId", "==", postId),
-        where("userId", "==", auth.currentUser.uid)
-        );
-        const docId = snapshot.docs[0].id;
-        await deleteDoc(doc(db, COLLECTION_FAVORITES, docId));
-        result = {
-        message: "Favorite was deleted succesfully.",
-        status: 200,
-        };
-    } catch (e) {
-        console.log(e);
-        result = {
-        message: "Something went wrong trying to delete a favorite.",
-        status: 400,
-        };
-    }
-    return result;
-    }
+  let result;
+  try {
+    const snapshot = await getDocs(
+      collection(db, COLLECTION_FAVORITES),
+      where("postId", "==", postId),
+      where("userId", "==", auth.currentUser.uid)
+    );
+    const docId = snapshot.docs[0].id;
+    await deleteDoc(doc(db, COLLECTION_FAVORITES, docId));
+    result = {
+      message: "Favorite was deleted succesfully.",
+      status: 200,
+    };
+  } catch (e) {
+    console.log(e);
+    result = {
+      message: "Something went wrong trying to delete a favorite.",
+      status: 400,
+    };
+  }
+  return result;
+}

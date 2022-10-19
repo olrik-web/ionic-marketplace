@@ -1,12 +1,4 @@
-import {
-  addDoc,
-  doc,
-  getDocs,
-  collection,
-  Timestamp,
-  deleteDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { addDoc, doc, getDocs, collection, Timestamp, deleteDoc, updateDoc, getDoc } from "firebase/firestore";
 import { db, auth } from "./firebase";
 
 const COLLECTION_POSTS = "posts";
@@ -102,7 +94,6 @@ export async function deletePost(postId) {
   return result;
 }
 
-
 // This function is used to update a post. It takes the post id and the new post data.
 export async function updatePost(post) {
   let result;
@@ -119,6 +110,26 @@ export async function updatePost(post) {
     console.log(e);
     result = {
       message: "Something went wrong trying to update a post.",
+      status: 400,
+    };
+  }
+  return result;
+}
+
+// Get a post by its id.
+export async function getPost(postId) {
+  let result;
+  try {
+    const post = await getDoc(doc(db, COLLECTION_POSTS, postId));
+    result = {
+      message: "Post was fetched succesfully.",
+      status: 200,
+      post: { ...post.data(), id: post.id },
+    };
+  } catch (e) {
+    console.log(e);
+    result = {
+      message: "Something went wrong trying to get a post.",
       status: 400,
     };
   }

@@ -1,50 +1,46 @@
-import {
-  IonImg,
-  IonCardHeader,
-  IonCard,
-  IonCardContent,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonIcon,
-  useIonViewWillEnter,
-} from "@ionic/react";
+import { IonIcon } from "@ionic/react";
 import "./PostCard.css";
 import { bookmark, bookmarkOutline } from "ionicons/icons";
-import PostActions from "./PostAction";
-import React from 'react';
-import { IonButton } from '@ionic/react';
-import { createFavorite, deleteFavorite } from "../util/favorite.server";
-import { useState } from 'react';
-import { resultingClientExists } from "workbox-core/_private";
+import { useEffect } from "react";
+import { IonButton } from "@ionic/react";
+import { createFavorite, deleteFavorite, getFavorite } from "../util/favorite.server";
+import { useState } from "react";
+import { auth } from "../util/firebase";
 
-
-export default function Favorite({product}) {
+export default function Favorite({ product }) {
   const [favorite, setFavorite] = useState();
-  useIonViewWillEnter ( () => {
-    getFavorite();
-  });
 
-  async function getFavorite() {
-   const result = await getFavorite(product.id);
-   console.log(result);
-  }
-  
+  useEffect(() => {
+    async function fetchFavorite() {
+      if (auth?.currentUser?.uid) {
+        const result = await getFavorite(product.id);
+        if (result.status === 200) {
+          setFavorite(result.data);
+        }
+      }
+    }
+    fetchFavorite();
+  }, [product.id]);
+
   async function handleFavorite(event) {
     event.preventDefault();
     event.stopPropagation();
     if (!favorite) {
       const result = await createFavorite(product.id);
-      setFavorite(true);
+      if (result.status === 200) {
+        setFavorite(true);
+      }
     } else {
       const result = await deleteFavorite(product.id);
-      setFavorite(false);
+      if (result.status === 200) {
+        setFavorite(false);
+      }
     }
-    
-  };
+  }
 
   return (
-
-  <IonButton onClick={handleFavorite}>
-      <IonIcon icon={favorite? bookmark : bookmarkOutline} slot="end" className="bookmark" />
-  </IonButton>
-)};
+    <IonButton color={"secondary"} fill={"clear"} onClick={handleFavorite} slot="end">
+      <IonIcon icon={favorite ? bookmark : bookmarkOutline} />
+    </IonButton>
+  );
+}
