@@ -1,5 +1,4 @@
 import {
-  IonItem,
   IonImg,
   IonCardHeader,
   IonCard,
@@ -7,17 +6,9 @@ import {
   IonCardSubtitle,
   IonCardTitle,
   IonIcon,
-  IonButton,
-  useIonActionSheet,
-  useIonAlert,
-  useIonModal,
 } from "@ionic/react";
 import "./PostCard.css";
 import { bookmark } from "ionicons/icons";
-import { ellipsisHorizontalOutline } from "ionicons/icons";
-import { deletePost } from "../util/post.server";
-import { Toast } from "@capacitor/toast";
-import ProductUpdateModal from "./ProductUpdateModal";
 import PostActions from "./PostAction";
 
 export default function ProductListItem({ product, reload }) {

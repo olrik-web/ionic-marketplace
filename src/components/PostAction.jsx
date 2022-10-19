@@ -37,13 +37,13 @@ export default function PostActions({ post, reload }) {
   }
 
   async function deletePostAction() {
-    await deletePost(post.id);
-
+    const deleteResult = await deletePost(post.id);
     reload();
 
     await Toast.show({
-      text: "Post deleted successfully!",
+      text: deleteResult.message,
       position: "center",
+      duration: "short",
     });
   }
 

@@ -7,7 +7,6 @@ import {
   deleteDoc,
   updateDoc,
 } from "firebase/firestore";
-import { newspaper } from "ionicons/icons";
 import { db, auth } from "./firebase";
 
 const COLLECTION_POSTS = "posts";
