@@ -62,7 +62,6 @@ export async function getPostsCurrentUser() {
     const snapshot = await getDocs(collection(db, COLLECTION_POSTS));
     // filter posts by user id (createdBy) and return them with post (document) id.
     // TODO: add pagination. (limit, offset)
-    // TODO: Change uid to id
     const posts = snapshot.docs
       .map((doc) => {
         return { ...doc.data(), id: doc.id };
@@ -103,11 +102,10 @@ export async function deletePost(postId) {
   return result;
 }
 
-// update post
 
+// This function is used to update a post. It takes the post id and the new post data.
 export async function updatePost(post) {
   let result;
-  console.log(post.id);
   try {
     await updateDoc(doc(db, COLLECTION_POSTS, post.id), {
       ...post,

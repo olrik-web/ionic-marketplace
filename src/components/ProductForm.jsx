@@ -33,6 +33,9 @@ export default function PostForm({ post, handleSubmit }) {
       setTitle(post.title);
       setDescription(post.description);
       setImageElement(post.image);
+      setPrice(post.price);
+      setSize(post.size);
+      setCategory(post.category);
     }
   }, [post]);
 
