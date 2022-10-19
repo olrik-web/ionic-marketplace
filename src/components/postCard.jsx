@@ -18,57 +18,9 @@ import { ellipsisHorizontalOutline } from "ionicons/icons";
 import { deletePost } from "../util/post.server";
 import { Toast } from "@capacitor/toast";
 import ProductUpdateModal from "./ProductUpdateModal";
+import PostActions from "./PostAction";
 
 export default function ProductListItem({ product, reload }) {
-  const [presentActionSheet] = useIonActionSheet();
-  const [presentDeleteDialog] = useIonAlert();
-  const [presentUpdateModal, dismissUpdateModal] = useIonModal(
-    <ProductUpdateModal
-      post={product}
-      dismiss={handleDismissUpdateModal}
-      reloadEvent={reload}
-    />
-  );
-
-  function showActionSheet(event) {
-    event.stopPropagation();
-    event.preventDefault();
-    presentActionSheet({
-      buttons: [
-        { text: "Edit", handler: presentUpdateModal },
-        { text: "Delete", role: "descrutive", handler: showDeleteDialog },
-        { text: "Cancel", role: "cancel" },
-      ],
-    });
-  }
-
-  // showDeleteDialog is a function that shows a dialog to confirm deletion
-  function showDeleteDialog() {
-    presentDeleteDialog({
-      header: "Delete",
-      message: "Are you sure you want to delete this product?",
-      buttons: [
-        { text: "No" },
-        { text: "Yes", role: "destructive", handler: deletePostAction },
-      ],
-    });
-  }
-
-  function handleDismissUpdateModal() {
-    dismissUpdateModal();
-  }
-
-  async function deletePostAction() {
-    await deletePost(product.id);
-
-    reload();
-
-    await Toast.show({
-      text: "Post deleted successfully!",
-      position: "center",
-    });
-  }
-
   return (
     <IonCard
       className="ionCard"
@@ -83,9 +35,7 @@ export default function ProductListItem({ product, reload }) {
         </IonCardSubtitle>
         <IonCardTitle className="product-title">{product.title}</IonCardTitle>
       </IonCardHeader>
-      <IonButton fill="clear" onClick={showActionSheet}>
-        <IonIcon slot="icon-only" icon={ellipsisHorizontalOutline} />
-      </IonButton>
+      <PostActions post={product} reload={reload} />
       <IonCardContent className="ionCard-content">
         <p className="product-size">Størrelse: {product.size} </p>
         <p className="product-location">Aarhus</p>
