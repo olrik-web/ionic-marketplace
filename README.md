@@ -38,6 +38,8 @@ We have also used the capacitor.config.ts file to create the splash screen for o
 Clone or download the .zip file from the GitHub repository and open it in Visual Studio Code. Open the Terminal and run “npm install” - the project will soon be installed. Once the installation is complete, you can type "ionic serve" in the Terminal. The app will be opened in development mode in your browser. In order to use the app, you must either create a user or use the following login information: 
 
 Email: admin@mail.com
+
+
 Password: p4ssw0rd
 
 You now have access to the app!
