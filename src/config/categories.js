@@ -1,11 +1,13 @@
 export const categories = [
-  "Shoes",
-  "Hoodies",
+  "Footwear",
   "T-Shirts",
+  "Sweaters & Hoodies",
+  "Shirts",
+  "Jeans",
   "Pants",
-  "Shorts",
-  "Sweaters",
   "Jackets",
+  "Shorts",
+  "Underwear & Socks",
   "Accessories",
   "Other",
 ];

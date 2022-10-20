@@ -1,17 +1,19 @@
-import { IonButton, IonIcon, useIonActionSheet, useIonAlert, useIonModal } from "@ionic/react";
+import { IonButton, IonIcon, useIonActionSheet, useIonAlert, useIonLoading, useIonModal } from "@ionic/react";
 import { ellipsisHorizontalOutline } from "ionicons/icons";
 import { Toast } from "@capacitor/toast";
 import ProductUpdateModal from "./ProductUpdateModal";
 import { deletePost } from "../util/post.server";
 import { auth } from "../util/firebase";
 import { useHistory } from "react-router";
+import { deleteAllFavorites } from "../util/favorite.server";
 
 export default function PostActions({ post, reload }) {
   const [presentActionSheet] = useIonActionSheet();
   const [presentDeleteDialog] = useIonAlert();
   const [presentUpdateModal, dismissUpdateModal] = useIonModal(
-    <ProductUpdateModal post={post} dismiss={handleDismissUpdateModal} reloadEvent={reload} />
+    <ProductUpdateModal post={post} dismiss={handleDismissUpdateModal} reload={reload} />
   );
+  const [present, dismissLoader] = useIonLoading();
 
   const history = useHistory();
 
@@ -48,7 +50,6 @@ export default function PostActions({ post, reload }) {
     history.push(`/chats/${post.createdBy}`);
   }
 
-
   // showDeleteDialog is a function that shows a dialog to confirm deletion
   function showDeleteDialog() {
     presentDeleteDialog({
@@ -63,6 +64,9 @@ export default function PostActions({ post, reload }) {
   }
 
   async function deletePostAction() {
+    present({ message: "Loading..." });
+    // First we delete all favorites connected to the post. Then we delete the post.
+    await deleteAllFavorites(post.id);
     const deleteResult = await deletePost(post.id);
     reload();
 
@@ -71,6 +75,7 @@ export default function PostActions({ post, reload }) {
       position: "center",
       duration: "short",
     });
+    dismissLoader();
   }
 
   return (

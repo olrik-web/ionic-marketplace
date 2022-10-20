@@ -6,6 +6,7 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonLoading,
   useIonViewWillEnter,
 } from "@ionic/react";
 import { useState } from "react";
@@ -22,6 +23,7 @@ export default function UserChatPage() {
   const [otherUser, setOtherUser] = useState({});
   const [messages, setMessages] = useState([]);
   const params = useParams();
+  const [present, dismiss] = useIonLoading();
 
   useIonViewWillEnter(() => {
     fetchUser();
@@ -54,11 +56,7 @@ export default function UserChatPage() {
   }
 
   async function handleSubmit(message) {
-    //TODO: Do we need to prevent default in this submit???
-
-    //TODO: Show loader
-    // present();
-
+    present();
     // Sending the message
     const result = await createMessage(auth.currentUser.uid, otherUser.uid, message);
     await Toast.show({
@@ -67,17 +65,19 @@ export default function UserChatPage() {
       duration: "long",
     });
 
-    //TODO: Hide loader
-    // dismiss();
+    dismiss();
   }
 
   async function handleDelete(messageId) {
+    present();
+
     const result = await deleteMessage(auth.currentUser.uid, otherUser.uid, messageId);
     await Toast.show({
       text: result.message,
       position: "center",
       duration: "long",
     });
+    dismiss();
   }
 
   return (

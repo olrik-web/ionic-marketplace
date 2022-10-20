@@ -1,4 +1,17 @@
-import { addDoc, doc, getDocs, collection, Timestamp, deleteDoc, updateDoc, getDoc } from "firebase/firestore";
+import {
+  addDoc,
+  doc,
+  getDocs,
+  collection,
+  Timestamp,
+  deleteDoc,
+  updateDoc,
+  getDoc,
+  orderBy,
+  query,
+  limit,
+  startAfter,
+} from "firebase/firestore";
 import { db, auth } from "./firebase";
 
 const COLLECTION_POSTS = "posts";
@@ -47,18 +60,69 @@ export async function getPosts() {
   return result;
 }
 
+// Get posts with pagination and sort by createdAt field (descending).
+export async function getPostsPaginated(limiter, lastPostId) {
+  let result;
+  try {
+    // get last post from db
+    const postsRef = collection(db, COLLECTION_POSTS);
+    const lastPostSnapshot = await getDoc(doc(db, COLLECTION_POSTS, lastPostId));
+
+    // Construct a new query starting at the document after the last visible post and get the next posts (limit). Order by createdAt field (descending).
+    const next = query(postsRef, orderBy("createdAt", "desc"), startAfter(lastPostSnapshot), limit(limiter));
+
+    const snapshot = await getDocs(next);
+
+    result = {
+      message: "Posts were fetched succesfully.",
+      status: 200,
+      posts: snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })),
+    };
+  } catch (e) {
+    console.log(e);
+    result = {
+      message: "Something went wrong trying to get posts.",
+      status: 400,
+    };
+  }
+  return result;
+}
+
+// Get posts with pagination and sort by createdAt field (descending).
+export async function getPostsLimit(limiter) {
+  let result;
+  try {
+    const postsRef = collection(db, COLLECTION_POSTS);
+    const q = query(postsRef, orderBy("createdAt", "desc"), limit(limiter));
+    const snapshot = await getDocs(q);
+
+    result = {
+      message: "Posts were fetched succesfully.",
+      status: 200,
+      posts: snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })),
+    };
+  } catch (e) {
+    console.log(e);
+    result = {
+      message: "Something went wrong trying to get posts.",
+      status: 400,
+    };
+  }
+  return result;
+}
+
 // get posts by user id (createdBy) and return them.
 export async function getPostsCurrentUser() {
   let result;
   try {
     const snapshot = await getDocs(collection(db, COLLECTION_POSTS));
     // filter posts by user id (createdBy) and return them with post (document) id.
-    // TODO: add pagination. (limit, offset)
     const posts = snapshot.docs
       .map((doc) => {
         return { ...doc.data(), id: doc.id };
       })
-      .filter((post) => post.createdBy === auth.currentUser.uid);
+      .filter((post) => post.createdBy === auth.currentUser.uid)
+      .sort((a, b) => b.createdAt - a.createdAt);
 
     result = {
       message: "Posts were fetched succesfully.",

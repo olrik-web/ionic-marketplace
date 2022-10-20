@@ -9,6 +9,7 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonLoading,
   useIonViewWillEnter,
 } from "@ionic/react";
 import { useHistory } from "react-router";
@@ -40,6 +41,7 @@ export default function Profile() {
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
   const [currentUser, setCurrentUser] = useState();
+  const [present, dismiss] = useIonLoading();
 
   useIonViewWillEnter(() => {
     getCurrentUser();
@@ -116,8 +118,10 @@ export default function Profile() {
     const confirm = await showConfirm("Sign Out", "Are you sure?", "Sign Out", "Cancel");
     // If they press ok, sign them out.
     if (confirm) {
+      present({ message: "Loading..." });
       await signOutUser();
       history.push("/login");
+      dismiss();
     }
   }
 
@@ -198,7 +202,7 @@ export default function Profile() {
           return;
         }
       }
-
+      present({ message: "Loading..." });
       // Update the user
       const userResult = await updateUser(user, shouldUpdatePassword, shouldUpdateEmail);
       if (userResult.status === 200) {
@@ -220,6 +224,7 @@ export default function Profile() {
           duration: "short",
         });
       }
+      dismiss();
     }
   }
 
@@ -254,6 +259,7 @@ export default function Profile() {
   }
 
   async function changeLocation() {
+    present({ message: "Loading..." });
     if (latitude && longitude && latitude !== 0 && longitude !== 0) {
       const locationData = await getLocationCity(latitude, longitude);
       if (locationData.status === 200) {
@@ -287,6 +293,7 @@ export default function Profile() {
         duration: "short",
       });
     }
+    dismiss();
   }
   if (currentUser) {
     return (
@@ -372,7 +379,7 @@ export default function Profile() {
               <IonList>
                 <div className="ionCard-grid">
                   {posts.map((post) => (
-                    <ProductListItem key={post.id} product={post} profileView={true} />
+                    <ProductListItem key={post.id} product={post} profileView={true} reload={getPosts} />
                   ))}
                 </div>
               </IonList>

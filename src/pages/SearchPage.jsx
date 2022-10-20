@@ -1,14 +1,16 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSearchbar, useIonViewWillEnter } from "@ionic/react";
+import { Toast } from "@capacitor/toast";
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSearchbar, useIonViewWillEnter, IonButton } from "@ionic/react";
 import { useState } from "react";
 import ProductListItem from "../components/ProductListItem";
 import { auth } from "../util/firebase";
-import { getPosts } from "../util/post.server";
+import { getPostsLimit, getPostsPaginated } from "../util/post.server";
 import { getUser } from "../util/user.server";
 
 export default function SearchPage() {
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
+  const limiter = 12;
 
   useIonViewWillEnter(() => {
     fetchPost();
@@ -16,9 +18,23 @@ export default function SearchPage() {
   });
 
   async function fetchPost() {
-    const postResult = await getPosts();
+    const postResult = await getPostsLimit(limiter);
     if (postResult.status === 200 && postResult.posts) {
       setPosts(postResult.posts);
+    }
+  }
+
+  async function fetchPostPaginated() {
+    const lastPost = posts[posts.length - 1];
+    const postResult = await getPostsPaginated(limiter, lastPost.id);
+    if (postResult.status === 200 && postResult.posts) {
+      if (postResult.posts.length === 0) {
+        await Toast.show({
+          text: "No more posts to show",
+        });
+      } else {
+        setPosts([...posts, ...postResult.posts]);
+      }
     }
   }
 
@@ -65,6 +81,7 @@ export default function SearchPage() {
             <ProductListItem product={post} key={post.id} reload={fetchPost} currentUser={currentUser} />
           ))}
         </div>
+        <IonButton onClick={fetchPostPaginated}>Load more</IonButton>
       </IonContent>
     </IonPage>
   );

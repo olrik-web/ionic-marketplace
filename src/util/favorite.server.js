@@ -100,3 +100,25 @@ export async function deleteFavorite(postId) {
   }
   return result;
 }
+
+// Function that deletes all favorites using a post id
+export async function deleteAllFavorites(postId) {
+  let result;
+  try {
+    const snapshot = await getDocs(collection(db, COLLECTION_FAVORITES), where("postId", "==", postId));
+    snapshot.forEach((document) => {
+      deleteDoc(doc(db, COLLECTION_FAVORITES, document.id));
+    });
+    result = {
+      message: "Favorites were deleted succesfully.",
+      status: 200,
+    };
+  } catch (e) {
+    console.log(e);
+    result = {
+      message: "Something went wrong trying to delete favorites.",
+      status: 400,
+    };
+  }
+  return result;
+}

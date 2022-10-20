@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonLoading } from "@ionic/react";
 import ProductForm from "../components/ProductForm";
 import { Toast } from "@capacitor/toast";
 import { createPost } from "../util/post.server";
@@ -6,7 +6,10 @@ import { useHistory } from "react-router";
 
 export default function AddPage() {
   const history = useHistory();
+  const [present, dismiss] = useIonLoading();
+
   async function handleSubmit(newPost) {
+    present({ message: "Loading..." });
     const postResult = await createPost(newPost);
 
     await Toast.show({
@@ -18,6 +21,7 @@ export default function AddPage() {
     if (postResult?.status === 200) {
       history.push("/home");
     }
+    dismiss();
   }
   return (
     <IonPage>
