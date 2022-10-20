@@ -9,7 +9,7 @@ import { collection, doc, getDoc, getDocs, setDoc, Timestamp, updateDoc } from "
 import { auth, db } from "./firebase";
 
 const COLLECTION_USERS = "users";
-
+//TODO: Add city to user model
 export async function createUser(newUser) {
   let result;
   try {
@@ -22,7 +22,9 @@ export async function createUser(newUser) {
       firstName: newUser.firstName,
       lastName: newUser.lastName,
       email: newUser.email,
+      location: newUser.location,
       createdAt: Timestamp.fromDate(new Date()),
+      updatedAt: Timestamp.fromDate(new Date()),
     });
 
     // Response is good.
@@ -112,7 +114,6 @@ export async function updateUserStatus(status) {
  */
 export async function getUser(uid) {
   const docRef = doc(db, COLLECTION_USERS, uid);
-
   try {
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {

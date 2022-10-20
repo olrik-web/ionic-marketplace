@@ -3,6 +3,8 @@ import { ellipsisHorizontalOutline } from "ionicons/icons";
 import { Toast } from "@capacitor/toast";
 import ProductUpdateModal from "./ProductUpdateModal";
 import { deletePost } from "../util/post.server";
+import { auth } from "../util/firebase";
+import { useHistory } from "react-router";
 
 export default function PostActions({ post, reload }) {
   const [presentActionSheet] = useIonActionSheet();
@@ -11,17 +13,41 @@ export default function PostActions({ post, reload }) {
     <ProductUpdateModal post={post} dismiss={handleDismissUpdateModal} reloadEvent={reload} />
   );
 
+  const history = useHistory();
+
   function showActionSheet(event) {
     event.stopPropagation();
     event.preventDefault();
-    presentActionSheet({
-      buttons: [
-        { text: "Edit", handler: presentUpdateModal },
-        { text: "Delete", role: "descrutive", handler: showDeleteDialog },
-        { text: "Cancel", role: "cancel" },
-      ],
-    });
+    if (post.createdBy === auth.currentUser.uid) {
+      presentActionSheet({
+        buttons: [
+          { text: "View", handler: goToProductPage },
+          { text: "Edit", handler: presentUpdateModal },
+          { text: "Delete", role: "destructive", handler: showDeleteDialog },
+          { text: "Cancel", role: "cancel" },
+        ],
+      });
+    } else {
+      presentActionSheet({
+        buttons: [
+          { text: "View", handler: goToProductPage },
+          { text: "Send a message", handler: goToChatsPage },
+          { text: "Cancel", role: "cancel" },
+        ],
+      });
+    }
   }
+
+  // Go to product page when clicking on the view product button
+  function goToProductPage() {
+    history.push(`/products/${post.id}`);
+  }
+
+  // Go to contact page when clicking on the contact button
+  function goToChatsPage() {
+    history.push(`/chats/${post.createdBy}`);
+  }
+
 
   // showDeleteDialog is a function that shows a dialog to confirm deletion
   function showDeleteDialog() {
@@ -48,7 +74,7 @@ export default function PostActions({ post, reload }) {
   }
 
   return (
-    <IonButton fill="clear" onClick={showActionSheet}>
+    <IonButton fill="clear" onClick={showActionSheet} slot="end">
       <IonIcon slot="icon-only" icon={ellipsisHorizontalOutline} />
     </IonButton>
   );

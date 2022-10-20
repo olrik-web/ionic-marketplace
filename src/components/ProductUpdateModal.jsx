@@ -11,7 +11,6 @@ import PostForm from "./ProductForm";
 
 export default function ProductUpdateModal({ post, dismiss, reloadEvent }) {
   async function handleSubmit(updatedPost) {
-    console.log(updatedPost);
     await updatePost(updatedPost);
     dismiss();
     reloadEvent();
