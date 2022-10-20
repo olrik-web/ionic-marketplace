@@ -19,6 +19,8 @@ import SignUpPage from "./pages/SignUpPage";
 import ChatsPage from "./pages/ChatsPage";
 import UserChatPage from "./pages/UserChatPage";
 import AddPage from "./pages/AddPage";
+import ProductDetailsPage from "./pages/ProductDetailsPage";
+
 import { App } from "@capacitor/app";
 
 import { useEffect, useState } from "react";
@@ -44,7 +46,6 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 import "./theme/app.css";
-import ProductDetailsPage from "./pages/ProoductDetailsPage";
 
 setupIonicReact();
 

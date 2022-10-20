@@ -18,11 +18,12 @@ import { useState } from "react";
 import { auth } from "../util/firebase";
 import { Toast } from "@capacitor/toast";
 import { EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
-import { getPostsCurrentUser } from "../util/post.server";
-import ProductListItem from "../components/PostCard";
+import { getPost, getPostsCurrentUser } from "../util/post.server";
+import ProductListItem from "../components/ProductListItem";
 import { getLocationCity, updateLocation } from "../util/location.server";
 import { Geolocation } from "@capacitor/geolocation";
 import { Capacitor } from "@capacitor/core";
+import { getFavoritedPosts } from "../util/favorite.server";
 
 export default function Profile() {
   const history = useHistory();
@@ -34,16 +35,47 @@ export default function Profile() {
   const [currentEmail, setCurrentEmail] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [posts, setPosts] = useState([]);
+  const [favoritedPosts, setFavoritedPosts] = useState([]);
   const [city, setCity] = useState("");
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
+  const [currentUser, setCurrentUser] = useState();
 
   useIonViewWillEnter(() => {
     getCurrentUser();
     getPosts();
+    getBookmarkedPosts();
     // Getting the location of the device.
     setCurrentPosition();
   });
+
+  // Get bookmarked posts from the database.
+  async function getBookmarkedPosts() {
+    let tempPosts = [];
+    if (auth.currentUser) {
+      const postsResult = await getFavoritedPosts();
+      // If response is good we set state with the data
+      if (postsResult.status === 200 && postsResult.data) {
+        postsResult.data.forEach((favorite) =>
+          getPost(favorite.postId).then((result) => {
+            if (result.status === 200 && result.post) {
+              if (result.post != null) {
+                tempPosts.push(result.post);
+                setFavoritedPosts(tempPosts);
+              }
+            }
+          })
+        );
+      } else {
+        // Show error message if something went wrong.
+        await Toast.show({
+          text: postsResult.message,
+          position: "center",
+          duration: "short",
+        });
+      }
+    }
+  }
 
   // Getting info about the user which is currently logged in
   async function getCurrentUser() {
@@ -56,6 +88,7 @@ export default function Profile() {
         setLastName(userResult.data.lastName);
         setCurrentEmail(userResult.data.email);
         setCity(userResult.data.city);
+        setCurrentUser(userResult.data);
       }
     }
   }
@@ -72,7 +105,7 @@ export default function Profile() {
         await Toast.show({
           text: postsResult.message,
           position: "center",
-          duration: "long",
+          duration: "short",
         });
       }
     }
@@ -255,100 +288,140 @@ export default function Profile() {
       });
     }
   }
-
-  return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Profile</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
+  if (currentUser) {
+    return (
+      <IonPage>
+        <IonHeader>
           <IonToolbar>
-            <IonTitle size="large">Profile</IonTitle>
+            <IonTitle>Profile</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <form onSubmit={submitEvent}>
-          <IonItem>
-            <IonLabel position="stacked">First name</IonLabel>
-            <IonInput
-              value={firstName}
-              placeholder="Type your first name"
-              onIonChange={(e) => setFirstName(e.target.value)}
-            />
-          </IonItem>
-          <IonItem>
-            <IonLabel position="stacked">Last name</IonLabel>
-            <IonInput
-              value={lastName}
-              placeholder="Type your last name"
-              onIonChange={(e) => setLastName(e.target.value)}
-            />
-          </IonItem>
-          <IonItem>
-            <IonLabel position="stacked">Email</IonLabel>
-            <IonInput value={email} placeholder="Type your email" onIonChange={(e) => setEmail(e.target.value)} />
-          </IonItem>
-          <IonItem>
-            <IonButton type="button" onClick={changeLocation} fill="outline" slot="end">
-              Update location
-            </IonButton>
-            <IonLabel position="stacked">City</IonLabel>
-            <IonInput value={city} readonly />
-          </IonItem>
-
-          <IonItem>
-            <IonLabel position="stacked">Current password</IonLabel>
-            <IonInput
-              type="password"
-              value={currentPassword}
-              placeholder="Type your current password"
-              onIonChange={(e) => setCurrentPassword(e.target.value)}
-            />
-          </IonItem>
-          <IonItem>
-            <IonLabel position="stacked">New password</IonLabel>
-            <IonInput
-              type="password"
-              value={newPassword}
-              placeholder="Type your new password"
-              onIonChange={(e) => setNewPassword(e.target.value)}
-            />
-          </IonItem>
-          <IonItem>
-            <IonLabel position="stacked">Confirm new password</IonLabel>
-            <IonInput
-              type="password"
-              value={confirmPassword}
-              placeholder="Type your new password again"
-              onIonChange={(e) => setConfirmPassword(e.target.value)}
-            />
-          </IonItem>
-          <IonButton type="submit" expand="block">
-            Update profile
-          </IonButton>
-        </form>
-        {posts.length > 0 && (
-          <>
-            <IonItem position="stacked">
-              <IonLabel>
-                <h1>Your posts</h1>
-              </IonLabel>
+        <IonContent fullscreen>
+          <IonHeader collapse="condense">
+            <IonToolbar>
+              <IonTitle size="large">Profile</IonTitle>
+            </IonToolbar>
+          </IonHeader>
+          <form onSubmit={submitEvent}>
+            <IonItem>
+              <IonLabel position="stacked">First name</IonLabel>
+              <IonInput
+                value={firstName}
+                placeholder="Type your first name"
+                onIonChange={(e) => setFirstName(e.target.value)}
+              />
             </IonItem>
-            <IonList>
-              <div className="ionCard-grid">
-                {posts.map((post) => (
-                  <ProductListItem key={post.id} product={post} profileView={true} />
-                ))}
-              </div>
-            </IonList>
-          </>
-        )}
-        <IonButton type="button" expand="block" onClick={handleSignOut}>
-          Sign out
-        </IonButton>
-      </IonContent>
-    </IonPage>
-  );
+            <IonItem>
+              <IonLabel position="stacked">Last name</IonLabel>
+              <IonInput
+                value={lastName}
+                placeholder="Type your last name"
+                onIonChange={(e) => setLastName(e.target.value)}
+              />
+            </IonItem>
+            <IonItem>
+              <IonLabel position="stacked">Email</IonLabel>
+              <IonInput value={email} placeholder="Type your email" onIonChange={(e) => setEmail(e.target.value)} />
+            </IonItem>
+            <IonItem>
+              <IonButton type="button" onClick={changeLocation} fill="outline" slot="end">
+                Update location
+              </IonButton>
+              <IonLabel position="stacked">City</IonLabel>
+              <IonInput value={city} readonly />
+            </IonItem>
+
+            <IonItem>
+              <IonLabel position="stacked">Current password</IonLabel>
+              <IonInput
+                type="password"
+                value={currentPassword}
+                placeholder="Type your current password"
+                onIonChange={(e) => setCurrentPassword(e.target.value)}
+              />
+            </IonItem>
+            <IonItem>
+              <IonLabel position="stacked">New password</IonLabel>
+              <IonInput
+                type="password"
+                value={newPassword}
+                placeholder="Type your new password"
+                onIonChange={(e) => setNewPassword(e.target.value)}
+              />
+            </IonItem>
+            <IonItem>
+              <IonLabel position="stacked">Confirm new password</IonLabel>
+              <IonInput
+                type="password"
+                value={confirmPassword}
+                placeholder="Type your new password again"
+                onIonChange={(e) => setConfirmPassword(e.target.value)}
+              />
+            </IonItem>
+            <IonButton type="submit" expand="block">
+              Update profile
+            </IonButton>
+          </form>
+          {posts.length > 0 && (
+            <>
+              <IonItem position="stacked">
+                <IonLabel>
+                  <h1>Your posts</h1>
+                </IonLabel>
+              </IonItem>
+              <IonList>
+                <div className="ionCard-grid">
+                  {posts.map((post) => (
+                    <ProductListItem key={post.id} product={post} profileView={true} />
+                  ))}
+                </div>
+              </IonList>
+            </>
+          )}
+          {favoritedPosts.length > 0 && (
+            <>
+              <IonItem position="stacked">
+                <IonLabel>
+                  <h1>Your bookmarked items</h1>
+                </IonLabel>
+              </IonItem>
+              <IonList>
+                <div className="ionCard-grid">
+                  {favoritedPosts.map((post) => (
+                    <ProductListItem
+                      key={post.id}
+                      product={post}
+                      currentUser={currentUser}
+                      getPosts={getPosts}
+                      getBookmarkedPosts={getBookmarkedPosts}
+                    />
+                  ))}
+                </div>
+              </IonList>
+            </>
+          )}
+          <IonButton type="button" expand="block" onClick={handleSignOut}>
+            Sign out
+          </IonButton>
+        </IonContent>
+      </IonPage>
+    );
+  } else {
+    return (
+      <IonPage>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Loading...</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent fullscreen>
+          <IonHeader collapse="condense">
+            <IonToolbar>
+              <IonTitle size="large">Loading...</IonTitle>
+            </IonToolbar>
+          </IonHeader>
+        </IonContent>
+      </IonPage>
+    );
+  }
 }

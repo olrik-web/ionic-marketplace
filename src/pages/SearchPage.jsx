@@ -1,28 +1,43 @@
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonSearchbar,
-} from "@ionic/react";
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSearchbar, useIonViewWillEnter } from "@ionic/react";
 import { useState } from "react";
-import ProductCard from "../components/ProductCard";
+import ProductListItem from "../components/ProductListItem";
+import { auth } from "../util/firebase";
+import { getPosts } from "../util/post.server";
+import { getUser } from "../util/user.server";
 
 export default function SearchPage() {
   const [searchText, setSearchText] = useState("");
+  const [posts, setPosts] = useState([]);
+  const [currentUser, setCurrentUser] = useState({});
 
-  // Create array of objects
-  const items = [
-    { title: "Apple", type: "Fruit" },
-    { title: "Banana", type: "Fruit" },
-    { title: "Carrot", type: "Vegetable" },
-    { title: "Potato", type: "Vegetable" },
-  ];
+  useIonViewWillEnter(() => {
+    fetchPost();
+    getCurrentUser();
+  });
+
+  async function fetchPost() {
+    const postResult = await getPosts();
+    if (postResult.status === 200 && postResult.posts) {
+      setPosts(postResult.posts);
+    }
+  }
+
+  // Getting info about the user which is currently logged in
+  async function getCurrentUser() {
+    if (auth.currentUser) {
+      const userResult = await getUser(auth.currentUser.uid);
+      // If response is good we set state with the data
+      if (userResult.status === 200 && userResult.data) {
+        setCurrentUser(userResult.data);
+      }
+    }
+  }
 
   // Filter array of objects
-  const filteredItems = items.filter((item) =>
-    item.title.toLowerCase().includes(searchText.toLowerCase())
+  const filteredItems = posts.filter(
+    (item) =>
+      item.title.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.category.toLowerCase().includes(searchText.toLowerCase())
   );
 
   return (
@@ -45,9 +60,11 @@ export default function SearchPage() {
           value={searchText}
           onIonChange={(e) => setSearchText(e.detail.value)}
         ></IonSearchbar>
-        {filteredItems.map((item, index) => (
-          <ProductCard product={item} key={index} />
-        ))}
+        <div className="ionCard-grid">
+          {filteredItems.map((post) => (
+            <ProductListItem product={post} key={post.id} reload={fetchPost} currentUser={currentUser} />
+          ))}
+        </div>
       </IonContent>
     </IonPage>
   );

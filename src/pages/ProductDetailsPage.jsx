@@ -1,7 +1,7 @@
 import { IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonViewWillEnter } from "@ionic/react";
 import { useState } from "react";
 import { useParams } from "react-router";
-import ProductListItem from "../components/PostCard";
+import ProductListItem from "../components/ProductListItem";
 import { auth } from "../util/firebase";
 import { getPost } from "../util/post.server";
 import { getUser } from "../util/user.server";
@@ -42,13 +42,13 @@ export default function ProductDetailsPage() {
           <IonButtons slot="start">
             <IonBackButton text="Home" defaultHref="/home"></IonBackButton>
           </IonButtons>
-          <IonTitle>Details</IonTitle>
+          <IonTitle>{post.title}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Details</IonTitle>
+            <IonTitle size="large">{post.title}</IonTitle>
           </IonToolbar>
         </IonHeader>
         <ProductListItem product={post} key={id} reload={fetchPost} currentUser={currentUser} detailView={true} />

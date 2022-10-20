@@ -34,10 +34,6 @@ export default function SignUpForm({ handleSubmit }) {
     const validationSuccess = handleValidation();
 
     if (validationSuccess) {
-      console.log("Validation success!");
-      console.log("Latitude: " + latitude);
-      console.log("Longitude: " + longitude);
-
       const formData = {
         email: email,
         password: password,
@@ -51,8 +47,6 @@ export default function SignUpForm({ handleSubmit }) {
         city,
       };
       handleSubmit(formData);
-    } else {
-      console.log("Validation error!");
     }
   }
 

@@ -7,9 +7,8 @@ import { createFavorite, deleteFavorite, getFavorite } from "../util/favorite.se
 import { useState } from "react";
 import { auth } from "../util/firebase";
 
-export default function Favorite({ product }) {
+export default function Favorite({ product, getPosts, getBookmarkedPosts }) {
   const [favorite, setFavorite] = useState();
-
   useEffect(() => {
     async function fetchFavorite() {
       if (auth?.currentUser?.uid) {
@@ -36,6 +35,9 @@ export default function Favorite({ product }) {
         setFavorite(false);
       }
     }
+    // TODO: Reload the bookmarked posts. Calling getBookmarkedPosts() here does not work.
+    // getPosts();
+    // getBookmarkedPosts();
   }
 
   return (

@@ -32,20 +32,41 @@ export async function getFavorite(postId) {
     status: 400,
   };
   try {
-   const q = query(collection(db, COLLECTION_FAVORITES), where("userId", "==", auth.currentUser.uid));
+    const q = query(collection(db, COLLECTION_FAVORITES), where("userId", "==", auth.currentUser.uid));
 
-   const querySnapshot = await getDocs(q);
-   querySnapshot.forEach((doc) => {
-     if(doc.data().postId === postId){
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      if (doc.data().postId === postId) {
         result = {
           message: "Favorite was found.",
           status: 200,
-          data: {...doc.data(), id: doc.id},
+          data: { ...doc.data(), id: doc.id },
         };
         return;
-     }
-   });
+      }
+    });
+  } catch (e) {
+    console.log(e);
+    result = {
+      message: "Something went wrong trying to fetch favorites.",
+      status: 400,
+    };
+  }
+  return result;
+}
 
+// Get all favorites based on the user id from the current logged in user
+export async function getFavoritedPosts() {
+  let result;
+  try {
+    const q = query(collection(db, COLLECTION_FAVORITES), where("userId", "==", auth.currentUser.uid));
+    const querySnapshot = await getDocs(q);
+
+    result = {
+      message: "Favorites were fetched succesfully.",
+      status: 200,
+      data: querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })),
+    };
   } catch (e) {
     console.log(e);
     result = {

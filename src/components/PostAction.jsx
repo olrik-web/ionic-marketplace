@@ -40,7 +40,7 @@ export default function PostActions({ post, reload }) {
 
   // Go to product page when clicking on the view product button
   function goToProductPage() {
-    history.push(`/product/${post.id}`);
+    history.push(`/products/${post.id}`);
   }
 
   // Go to contact page when clicking on the contact button
