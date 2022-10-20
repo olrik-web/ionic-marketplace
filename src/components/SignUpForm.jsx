@@ -65,7 +65,7 @@ export default function SignUpForm({ handleSubmit }) {
     const regex = RegExp(
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i
     );
-    if(email.length === 0) {
+    if (email.length === 0) {
       setEmailError("Email is required");
       validationSuccess = false;
     } else if (regex.test(email) === false) {

@@ -102,7 +102,6 @@ export async function deletePost(postId) {
   return result;
 }
 
-
 // This function is used to update a post. It takes the post id and the new post data.
 export async function updatePost(post) {
   let result;
