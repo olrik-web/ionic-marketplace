@@ -95,6 +95,12 @@ export default function ProductListItem({ product, reload, detailView, profileVi
                   </p>
                 </IonItem>
               )}
+            {detailView && (
+              <IonItem lines="none">
+                <IonLabel position="stacked" color={"medium"}>Description</IonLabel>
+                <p className="product-description">{product.description}</p>
+              </IonItem>
+            )}
             {product.createdBy !== auth.currentUser.uid && (
               <IonItem lines="none">
                 <Favorite product={product} />
