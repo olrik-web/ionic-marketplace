@@ -23,7 +23,7 @@ export default function PostActions({ post, reload }) {
         buttons: [
           { text: "View", handler: goToProductPage },
           { text: "Edit", handler: presentUpdateModal },
-          { text: "Delete", role: "descrutive", handler: showDeleteDialog },
+          { text: "Delete", role: "destructive", handler: showDeleteDialog },
           { text: "Cancel", role: "cancel" },
         ],
       });
