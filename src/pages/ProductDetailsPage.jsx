@@ -1,4 +1,13 @@
-import { IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonViewWillEnter } from "@ionic/react";
+import {
+  IonBackButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+  useIonViewWillEnter,
+} from "@ionic/react";
 import { useState } from "react";
 import { useParams } from "react-router";
 import ProductListItem from "../components/ProductListItem";
@@ -21,7 +30,7 @@ export default function ProductDetailsPage() {
     const response = await getPost(id);
     if (response.status === 200) {
       setPost(response.post);
-    } 
+    }
   }
 
   // Getting info about the user which is currently logged in
@@ -51,7 +60,13 @@ export default function ProductDetailsPage() {
             <IonTitle size="large">{post.title}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ProductListItem product={post} key={id} reload={fetchPost} currentUser={currentUser} detailView={true} />
+        <ProductListItem
+          product={post}
+          key={id}
+          reload={fetchPost}
+          currentUser={currentUser}
+          detailView={true}
+        />
       </IonContent>
     </IonPage>
   );

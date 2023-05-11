@@ -8,7 +8,12 @@ export default function DistanceBetween({ seller, buyer }) {
     // Getting the location of seller and buyer and calculating the distance between them.
     function getDistance() {
       if (seller && buyer) {
-        const distance = getDistanceFromLatLonInKm(seller.latitude, seller.longitude, buyer.latitude, buyer.longitude);
+        const distance = getDistanceFromLatLonInKm(
+          seller.latitude,
+          seller.longitude,
+          buyer.latitude,
+          buyer.longitude
+        );
         setDistance(Math.ceil(distance));
       }
     }

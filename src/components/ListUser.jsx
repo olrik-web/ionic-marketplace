@@ -6,7 +6,8 @@ export default function ListUser({ selectedUser, chatView }) {
   const [lastOnlineTime, setLastOnlineTime] = useState();
   const [lastOnlineMessage, setLastOnlineMessage] = useState();
 
-  const defaultImg = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png";
+  const defaultImg =
+    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png";
 
   useEffect(() => {
     if (selectedUser && selectedUser.lastOnline) {
@@ -26,7 +27,11 @@ export default function ListUser({ selectedUser, chatView }) {
   }, [selectedUser]);
 
   return (
-    <IonItem key={selectedUser.uid} button routerLink={`chats/${selectedUser.uid}`}>
+    <IonItem
+      key={selectedUser.uid}
+      button
+      routerLink={`chats/${selectedUser.uid}`}
+    >
       <IonAvatar slot="start">
         <IonImg src={selectedUser.image ? selectedUser.image : defaultImg} />
       </IonAvatar>

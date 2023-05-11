@@ -87,7 +87,12 @@ export default function HomePage() {
           <IonList>
             <div className="ionCard-grid">
               {posts.map((post) => (
-                <ProductListItem product={post} key={post.id} reload={fetchPost} currentUser={currentUser} />
+                <ProductListItem
+                  product={post}
+                  key={post.id}
+                  reload={fetchPost}
+                  currentUser={currentUser}
+                />
               ))}
             </div>
           </IonList>
